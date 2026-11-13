@@ -207,9 +207,12 @@ def banner(t: dict, out: str) -> None:
     mic_glyph(draw, 998, 371, 0.9, WHITE)
     speaker_glyph(draw, 1078, 371, 1.0, GREEN)
 
-    tooltip_width = draw.textlength(t["tooltip"], font=font("segoeuib.ttf", 18)) + 20
-    rounded(draw, [998 - tooltip_width / 2, 282, 998 + tooltip_width / 2, 322], 12, fill=(43, 47, 54))
-    draw.text((988 - tooltip_width / 2, 291), t["tooltip"], font=font("segoeuib.ttf", 18), fill=(238, 242, 247))
+    tooltip_text = draw.textlength(t["tooltip"], font=font("segoeuib.ttf", 17))
+    tooltip_width = tooltip_text + 22
+    tooltip_left = 998 - tooltip_width / 2
+    rounded(draw, [tooltip_left, 296, tooltip_left + tooltip_width, 334], 10, fill=(43, 47, 54))
+    draw.text((998 - tooltip_text / 2, 305), t["tooltip"], font=font("segoeuib.ttf", 17), fill=(238, 242, 247))
+    draw.polygon([(990, 334), (1006, 334), (998, 341)], fill=(43, 47, 54))
 
     draw.text((758, 410), t["controls"], font=font("segoeui.ttf", 15), fill=(120, 136, 166))
     draw.text((76, 560), t["footer"], font=font("segoeui.ttf", 20), fill=(120, 136, 166))
