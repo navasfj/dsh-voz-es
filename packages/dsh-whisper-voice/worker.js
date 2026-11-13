@@ -14,6 +14,7 @@ import { createServer } from 'node:http'
 import { timingSafeEqual } from 'node:crypto'
 import { createRequire } from 'node:module'
 import { join } from 'node:path'
+import { pathToFileURL } from 'node:url'
 
 /** Invalid recording data; reported to the Host as a marked input rejection. */
 class SpeechInputError extends Error {}
@@ -94,6 +95,78 @@ function decodeWave(audio, maxBytes) {
 }
 
 /**
+ * Drop leading and trailing near-silence.
+ *
+ * Whisper conditions on whatever the clip contains, and a recording that opens
+ * or closes with silence is the usual trigger for its repetition loop. Keeping
+ * a short margin preserves the first and last phoneme.
+ *
+ * @param samples - normalized 16 kHz mono samples.
+ * @returns the speech region, or the original samples when nothing stands out.
+ */
+function trimSilence(samples) {
+  const frame = 320 // 20 ms at 16 kHz
+  const frames = Math.floor(samples.length / frame)
+  if (frames < 2) return samples
+  const energy = new Float32Array(frames)
+  let peak = 0
+  for (let index = 0; index < frames; index++) {
+    let sum = 0
+    for (let offset = 0; offset < frame; offset++) {
+      const value = samples[index * frame + offset]
+      sum += value * value
+    }
+    const rms = Math.sqrt(sum / frame)
+    energy[index] = rms
+    if (rms > peak) peak = rms
+  }
+  if (peak < 0.002) return samples
+  const threshold = Math.max(0.003, peak * 0.12)
+  let first = 0
+  while (first < frames && energy[first] < threshold) first += 1
+  let last = frames - 1
+  while (last > first && energy[last] < threshold) last -= 1
+  const margin = 8 // 160 ms
+  first = Math.max(0, first - margin)
+  last = Math.min(frames - 1, last + margin)
+  return samples.subarray(first * frame, Math.min(samples.length, (last + 1) * frame))
+}
+
+/**
+ * Collapse the identical-sentence loop Whisper falls into.
+ *
+ * Only long consecutive duplicates are removed, so intentional short
+ * repetitions ("no, no") survive.
+ *
+ * @param text - raw transcript.
+ * @returns the transcript with the loop removed.
+ */
+function collapseRepeats(text) {
+  const parts = text.match(/[^.!?…]+[.!?…]*/g)
+  if (parts === null || parts.length < 2) return text
+  const normalize = (value) => value.trim().toLowerCase().replace(/\s+/g, ' ').replace(/[.!?…]+$/, '')
+  const kept = []
+  let removed = 0
+  for (const part of parts) {
+    const key = normalize(part)
+    if (key.length >= 12 && kept.length > 0 && normalize(kept[kept.length - 1]) === key) {
+      removed += 1
+      continue
+    }
+    kept.push(part)
+  }
+  if (removed === 0) return text
+  // The loop often stops mid-sentence: drop the trailing fragment when it is
+  // just the beginning of the repeated sentence.
+  if (kept.length >= 2) {
+    const first = normalize(kept[0])
+    const tail = normalize(kept[kept.length - 1])
+    if (tail.length >= 4 && tail !== first && first.startsWith(tail)) kept.pop()
+  }
+  return kept.join(' ').replace(/\s+/g, ' ').trim()
+}
+
+/**
  * Start the authenticated loopback listener used by the Host.
  * @param token - private per-process authentication secret.
  * @param config - runtime and model configuration.
@@ -137,9 +210,9 @@ function startServer(token, config, paths) {
     const wave = decodeWave(audio, config.maxAudioBytes)
     const engine = recognizerFor(code)
     const stream = engine.createStream()
-    stream.acceptWaveform({ sampleRate: 16000, samples: wave.samples })
+    stream.acceptWaveform({ sampleRate: 16000, samples: trimSilence(wave.samples) })
     engine.decode(stream)
-    const text = engine.getResult(stream).text.trim()
+    const text = collapseRepeats(engine.getResult(stream).text.trim())
     return { text, audioSeconds: wave.audioSeconds, inferenceSeconds: (performance.now() - started) / 1000 }
   }
   const server = createServer((request, response) => {
@@ -195,7 +268,12 @@ async function main() {
   process.stdout.write(`${JSON.stringify({ port })}\n`)
 }
 
-main().catch((error) => {
-  // Exit once the message is flushed: a loaded native recognizer would otherwise keep the process alive.
-  process.stderr.write(`${error instanceof Error ? error.message : String(error)}\n`, () => { process.exit(1) })
-})
+const isMain = process.argv[1] !== undefined && import.meta.url === pathToFileURL(process.argv[1]).href
+if (isMain) {
+  main().catch((error) => {
+    // Exit once the message is flushed: a loaded native recognizer would otherwise keep the process alive.
+    process.stderr.write(`${error instanceof Error ? error.message : String(error)}\n`, () => { process.exit(1) })
+  })
+}
+
+export { collapseRepeats, trimSilence }

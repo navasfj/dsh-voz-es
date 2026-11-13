@@ -125,5 +125,8 @@ Han pasado más de 5 segundos: es el comportamiento previsto. Pulsa el botón y 
 **¿Se puede cambiar la velocidad?**
 Sí, con `speed` en la configuración del plugin (0.8–1.0).
 
+**El dictado repite la misma frase varias veces.**
+Era un bucle de Whisper al encontrarse silencio. El plugin ahora recorta el silencio inicial y final de la grabación y colapsa las frases repetidas; si aun así aparece, dicta sin dejar pausas largas antes de hablar o al terminar.
+
 **¿Funciona sin internet?**
 Sí, una vez descargados los modelos. La primera preparación necesita red.
