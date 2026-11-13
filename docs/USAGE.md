@@ -74,12 +74,14 @@ Detalles que conviene saber:
 - Si una respuesta termina mientras está silenciado, **no se lee después**: cuenta como vista y el siguiente relato empieza con la siguiente respuesta.
 - Al cambiar de sesión o cerrar la conversación, la lectura se detiene y se limpia.
 
-### Dictar mientras lee
+### Dictar o escribir mientras lee
 
-Si empiezas a dictar mientras suena una respuesta, la lectura **se pausa sola** en cuanto el micrófono empieza a capturar: si no, el micro grabaría también el altavoz y el texto saldría mezclado.
+Puedes añadir un comentario (dictado o escrito) sin perder el resto de la respuesta:
 
-- Al terminar la grabación, la lectura **no se reanuda**: el relato interrumpido se descarta en ese momento.
-- Así puedes escribir o enviar lo dictado sin que la voz vuelva por encima. La siguiente respuesta sí se lee con normalidad.
+- Al empezar a grabar, la lectura **se pausa sola** para que el micro no capture el altavoz.
+- Al terminar la grabación, si **no has enviado** el mensaje, la lectura **continúa** donde iba y termina.
+- En cuanto **envías** un mensaje (dictado o escrito), la lectura actual **se corta** y pasa a la respuesta nueva.
+- Silenciar con el altavoz es otra cosa: ahí sí manda el límite de 5 segundos del mute.
 
 ### Respuestas largas
 

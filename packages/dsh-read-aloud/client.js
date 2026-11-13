@@ -270,6 +270,9 @@ window.__ModuleLoader__.load({
      */
     const delivered = new Set()
 
+    /** User messages already seen, so a re-bind does not stop the narration. */
+    const seenUsers = new Set()
+
     /**
      * Follow one Session's Chat snapshot and read replies as they settle.
      *
@@ -294,6 +297,20 @@ window.__ModuleLoader__.load({
         const chat = snapshot && snapshot.views ? snapshot.views.get('chat') : undefined
         if (!chat || !chat.nodes) return
         for (const node of chat.nodes.values()) {
+          // Sending a message ends the current narration: the user wants to hear
+          // the answer to what they just wrote or dictated. History predates
+          // this bind, so only a node that appears while bound is a send.
+          if (node.kind === 'user' || node.kind === 'steering') {
+            const time = node.data && node.data.time
+            if (typeof time === 'number' && time >= boundAt - 5000) {
+              const key = `${sessionId}#${node.key}`
+              if (!seenUsers.has(key)) {
+                seenUsers.add(key)
+                stopSpeaking()
+              }
+            }
+            continue
+          }
           // The Chat renderer kind of one Assistant step is `assistant-step`;
           // only its settled state carries the final, user-visible blocks.
           if (node.kind !== 'assistant-step' || !node.data) continue
@@ -391,15 +408,24 @@ window.__ModuleLoader__.load({
           if (phase === 'requesting' || phase === 'recording') {
             if (!dictating) {
               dictating = true
-              if (!paused) pauseSpeaking()
+              if (!paused) {
+                pauseSpeaking()
+                // The mute window would discard the reply during a long
+                // dictation, but adding a comment is not a mute: keep it paused.
+                clearTimeout(discardTimer)
+                discardTimer = undefined
+              }
             }
             return
           }
           if (!dictating) return
-          // Drop the interrupted narration as soon as the microphone is free:
-          // the user is composing, and making them wait for the mute window
-          // could swallow the reply to the message they are about to send.
-          stopSpeaking()
+          dictating = false
+          // Adding a comment must not cost the rest of the reply: once the
+          // microphone is free, the narration continues where it was. Sending
+          // a message is what stops it, through the watcher.
+          if (!enabledRef.current) return
+          if (paused) resumeSpeaking()
+          else void pump()
           return
         }
         let queued = false
