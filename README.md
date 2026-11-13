@@ -102,6 +102,14 @@ Audio is not lost on pause: the WAV is already downloaded in the browser. A repl
 
 Full guide with dictation, what is read and what is not, limits and FAQ: **[docs/USAGE.en.md](docs/USAGE.en.md)** ([español](docs/USAGE.md)).
 
+## Screenshots
+
+<p align="center">
+  <img src="assets/screenshot-composer.png" alt="The real composer: read-aloud speaker, dictation microphone and send button" width="727">
+</p>
+
+The real composer: the read-aloud speaker sits left of the dictation microphone, and the blue circle sends. The banner above is a stylised version of this row.
+
 ## Architecture
 
 <p align="center">

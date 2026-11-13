@@ -34,6 +34,10 @@ COPY = {
         "banner": {
             "subtitle": ["Dictado y lectura en voz alta", "100 % local · en español"],
             "card": "Conversación",
+            "placeholder": ["Envía mensajes o ejecuta una tarea,", "/ comandos, @ archivos o sesiones"],
+            "mode": "Escritura",
+            "model": "DeepSeek-V4.1-Flash",
+            "model_tag": "High",
             "tooltip": "Dictar",
             "controls": "micrófono · dictado       altavoz · lectura",
             "footer": "Instalable desde GitHub, índice de plugins o npm",
@@ -68,6 +72,10 @@ COPY = {
         "banner": {
             "subtitle": ["Dictation and read-aloud", "100% local · Spanish"],
             "card": "Conversation",
+            "placeholder": ["Send messages or run a task,", "/ commands, @ files or sessions"],
+            "mode": "Writing",
+            "model": "DeepSeek-V4.1-Flash",
+            "model_tag": "High",
             "tooltip": "Dictate",
             "controls": "microphone · dictation       speaker · read-aloud",
             "footer": "Install from GitHub, the plugin index or npm",
@@ -190,31 +198,51 @@ def banner(t: dict, out: str) -> None:
         draw.text((x + 17, 408), label, font=font("segoeuib.ttf", 18), fill=(203, 213, 225))
         x += width + 12
 
-    card = [720, 120, 1208, 490]
+    card = [700, 100, 1228, 500]
     rounded(draw, card, 30, fill=CARD, outline=BORDER, width=2)
-    draw.text((758, 158), t["card"], font=font("segoeuib.ttf", 18), fill=(100, 116, 139))
-    rounded(draw, [758, 196, 1040, 212], 8, fill=(37, 51, 82))
-    rounded(draw, [758, 226, 980, 242], 8, fill=(30, 42, 70))
-    rounded(draw, [758, 290, 1170, 452], 22, fill=(18, 28, 54), outline=(40, 56, 92), width=2)
+    draw.text((738, 138), t["card"], font=font("segoeuib.ttf", 18), fill=(100, 116, 139))
 
-    heights = [10, 18, 30, 22, 40, 28, 46, 34, 20, 36, 26, 44, 30, 18, 12]
-    for index, height in enumerate(heights):
-        bx = 786 + index * 13
-        color = BLUE if index < 8 else GREEN
-        draw.rounded_rectangle([bx, 371 - height / 2, bx + 6, 371 + height / 2], radius=3, fill=color)
+    # Composer laid out like the real one: placeholder text on top, and the
+    # controls row at the bottom (+ / mode chip … model, speaker, microphone, send).
+    composer = [738, 190, 1182, 470]
+    rounded(draw, composer, 24, fill=(20, 26, 42), outline=(45, 58, 90), width=2)
+    draw.text((766, 216), t["placeholder"][0], font=font("segoeui.ttf", 15), fill=(120, 136, 166))
+    draw.text((766, 240), t["placeholder"][1], font=font("segoeui.ttf", 15), fill=(120, 136, 166))
 
-    draw.ellipse([966, 341, 1030, 405], fill=(37, 99, 235))
-    mic_glyph(draw, 998, 371, 0.9, WHITE)
-    speaker_glyph(draw, 1078, 371, 1.0, GREEN)
+    row = 424
+    rounded(draw, [756, row - 14, 784, row + 14], 14, fill=(28, 36, 58), outline=(48, 62, 96))
+    draw.line([(770, row - 6), (770, row + 6)], fill=(160, 174, 198), width=2)
+    draw.line([(764, row), (776, row)], fill=(160, 174, 198), width=2)
+
+    chip_font = font("segoeui.ttf", 13)
+    chip_width = draw.textlength(t["mode"], font=chip_font) + 36
+    rounded(draw, [794, row - 14, 794 + chip_width, row + 14], 14, fill=(28, 36, 58), outline=(48, 62, 96))
+    draw.text((806, row - 8), t["mode"], font=chip_font, fill=(186, 198, 220))
+    draw.polygon([(794 + chip_width - 22, row - 3), (794 + chip_width - 14, row - 3),
+                  (794 + chip_width - 18, row + 3)], fill=(140, 154, 180))
+
+    model_font = font("segoeui.ttf", 13)
+    model_width = draw.textlength(t["model"], font=model_font)
+    draw.text((1032 - model_width, row - 8), t["model"], font=model_font, fill=(186, 198, 220))
+    draw.text((1038, row - 8), t["model_tag"], font=model_font, fill=(110, 124, 150))
+
+    speaker_glyph(draw, 1082, row, 0.85, GREEN)
+
+    rounded(draw, [1104, row - 14, 1132, row + 14], 8, fill=(43, 50, 66))
+    mic_glyph(draw, 1118, row, 0.62, (235, 240, 248))
+
+    draw.ellipse([1140, row - 17, 1174, row + 17], fill=(59, 130, 246))
+    draw.line([(1157, row + 7), (1157, row - 7)], fill=WHITE, width=3)
+    draw.line([(1150, row - 1), (1157, row - 8)], fill=WHITE, width=3)
+    draw.line([(1164, row - 1), (1157, row - 8)], fill=WHITE, width=3)
 
     tooltip_text = draw.textlength(t["tooltip"], font=font("segoeuib.ttf", 17))
     tooltip_width = tooltip_text + 22
-    tooltip_left = 998 - tooltip_width / 2
-    rounded(draw, [tooltip_left, 296, tooltip_left + tooltip_width, 334], 10, fill=(43, 47, 54))
-    draw.text((998 - tooltip_text / 2, 305), t["tooltip"], font=font("segoeuib.ttf", 17), fill=(238, 242, 247))
-    draw.polygon([(990, 334), (1006, 334), (998, 341)], fill=(43, 47, 54))
+    tooltip_left = 1118 - tooltip_width / 2
+    rounded(draw, [tooltip_left, 344, tooltip_left + tooltip_width, 380], 10, fill=(43, 47, 54))
+    draw.text((1118 - tooltip_text / 2, 352), t["tooltip"], font=font("segoeuib.ttf", 17), fill=(238, 242, 247))
+    draw.polygon([(1110, 380), (1126, 380), (1118, 390)], fill=(43, 47, 54))
 
-    draw.text((758, 410), t["controls"], font=font("segoeui.ttf", 15), fill=(120, 136, 166))
     draw.text((76, 560), t["footer"], font=font("segoeui.ttf", 20), fill=(120, 136, 166))
 
     ASSETS.mkdir(parents=True, exist_ok=True)
