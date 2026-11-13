@@ -60,7 +60,7 @@ Audio is **transient**: it is not stored as a session event or an attachment. On
 ### Mute, in detail
 
 <p align="center">
-  <img src="../assets/mute-estados.png" alt="Mute states: reading, muted, discarded" width="100%">
+  <img src="../assets/mute-states.en.png" alt="Mute states: reading, muted, discarded" width="100%">
 </p>
 
 1. **Reading** (green): the reply plays.

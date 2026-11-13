@@ -1,7 +1,7 @@
 **English** | [Español](README.es.md)
 
 <p align="center">
-  <img src="assets/banner.png" alt="dsh-voz-es: local Spanish dictation and read-aloud for DeepSeek Harness" width="100%">
+  <img src="assets/banner.en.png" alt="dsh-voz-es: local Spanish dictation and read-aloud for DeepSeek Harness" width="100%">
 </p>
 
 <p align="center">
@@ -90,7 +90,7 @@ Then `@navasfj/dsh-read-aloud@1.0.0` and `@navasfj/dsh-whisper-voice@1.0.0`.
 ### Mute, step by step
 
 <p align="center">
-  <img src="assets/mute-estados.png" alt="Mute states: reading, muted and discarded" width="100%">
+  <img src="assets/mute-states.en.png" alt="Mute states: reading, muted and discarded" width="100%">
 </p>
 
 - **Green**: it is reading.
@@ -105,7 +105,7 @@ Full guide with dictation, what is read and what is not, limits and FAQ: **[docs
 ## Architecture
 
 <p align="center">
-  <img src="assets/architecture.png" alt="Architecture: browser, DSH Host, child processes and models on disk" width="100%">
+  <img src="assets/architecture.en.png" alt="Architecture: browser, DSH Host, child processes and models on disk" width="100%">
 </p>
 
 - The browser captures at **16 kHz mono** and uploads the WAV over DSH's authenticated channel.
