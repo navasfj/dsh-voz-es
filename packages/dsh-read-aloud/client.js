@@ -18,6 +18,14 @@ window.__ModuleLoader__.load({
     const { useEffect, useRef, useState } = React
     const h = React.createElement
 
+    // The microphone beside this button renders DSH's shared Tooltip. Reusing
+    // the same component keeps both hints identical (same box, font, gap and
+    // portal placement) instead of approximating the look with local CSS.
+    const primitives = (() => {
+      try { return require('@deepseek-ai/dsh-client-ui-primitives') } catch { return null }
+    })()
+    const SharedTooltip = primitives === null ? null : primitives.Tooltip
+
     const STORAGE_KEY = 'dsh:read-aloud:enabled'
     // One synthesis request carries several sentences; the Host pays a model
     // inference per request, so very small chunks would add needless latency.
@@ -34,7 +42,7 @@ window.__ModuleLoader__.load({
 .dsh-ra-button:focus-visible{outline:2px solid var(--dsw-focus-ring-color,currentColor);outline-offset:2px}
 .dsh-ra-button[aria-pressed="true"]{color:var(--dsw-alias-state-success-primary,#16a34a)}
 .dsh-ra-button[disabled]{opacity:.35;cursor:default}
-.dsh-ra-tip{position:absolute;left:50%;bottom:calc(100% + 8px);transform:translateX(-50%);display:none;padding:5px 9px;border-radius:6px;background:#2b2f36;color:#ffffff;font-size:12px;line-height:16px;white-space:nowrap;pointer-events:none;z-index:20;box-shadow:0 6px 18px rgba(0,0,0,.28)}
+.dsh-ra-tip{position:absolute;left:50%;bottom:calc(100% + 8px);transform:translateX(-50%);display:none;padding:4px 8px;border-radius:6px;background:#2b2f36;color:#ffffff;font-size:12px;line-height:16px;white-space:nowrap;pointer-events:none;z-index:20;box-shadow:0 6px 18px rgba(0,0,0,.28)}
 .dsh-ra-anchor:hover .dsh-ra-tip,.dsh-ra-anchor:focus-within .dsh-ra-tip{display:block}
 `
 
@@ -379,19 +387,28 @@ window.__ModuleLoader__.load({
           h('path', { key: 'off1', d: 'M16 9.5l5.5 5.5' }),
           h('path', { key: 'off2', d: 'M21.5 9.5L16 15' }))
 
+      const tip = enabled ? 'Silenciar' : 'Leer'
+      const button = h('button', {
+        type: 'button',
+        className: 'dsh-ra-button',
+        'aria-label': label,
+        'aria-pressed': enabled,
+        disabled: !available,
+        onMouseDown: (event) => { event.preventDefault() },
+        onClick: () => { setEnabled((value) => !value) },
+      }, icon)
+
+      // Same hint as the microphone: the shared Tooltip when the loader exposes
+      // it, and a local fallback with the same box for older builds.
+      const control = SharedTooltip === null
+        ? h(React.Fragment, null,
+          button,
+          h('span', { key: 'dsh-ra-tip', className: 'dsh-ra-tip', role: 'tooltip' }, tip))
+        : h(SharedTooltip, { label: tip, side: 'top', portal: true }, button)
+
       return h(React.Fragment, null,
         h('style', { key: 'dsh-ra-style' }, STYLE),
-        h('span', { key: 'dsh-ra-anchor', className: 'dsh-ra-anchor' },
-          h('button', {
-            type: 'button',
-            className: 'dsh-ra-button',
-            'aria-label': label,
-            'aria-pressed': enabled,
-            disabled: !available,
-            onMouseDown: (event) => { event.preventDefault() },
-            onClick: () => { setEnabled((value) => !value) },
-          }, icon),
-          h('span', { key: 'dsh-ra-tip', className: 'dsh-ra-tip', role: 'tooltip' }, enabled ? 'Silenciar' : 'Leer')))
+        h('span', { key: 'dsh-ra-anchor', className: 'dsh-ra-anchor' }, control))
     }
 
     return {
