@@ -1,0 +1,50 @@
+name: Error
+description: Algo no funciona como debería
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Antes de abrir el issue, revisa **docs/USAGE.md** y la sección de problemas frecuentes del README.
+  - type: input
+    id: dsh
+    attributes:
+      label: Versión de DSH
+      placeholder: 0.2.2-rc.3
+    validations:
+      required: true
+  - type: dropdown
+    id: plugin
+    attributes:
+      label: Plugin afectado
+      options:
+        - Dictado (dsh-whisper-voice)
+        - Lectura (dsh-read-aloud)
+        - Ambos
+        - Instalación / índice
+    validations:
+      required: true
+  - type: input
+    id: system
+    attributes:
+      label: Sistema operativo
+      placeholder: Windows 11 24H2 / macOS 15 / Ubuntu 24.04
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: Qué ocurre
+      description: Pasos para reproducirlo y resultado esperado.
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Consola o registros
+      description: Consola del navegador, Plugins → estado del plugin, mensajes de error.
+      render: text
+  - type: textarea
+    id: extra
+    attributes:
+      label: Capturas o contexto adicional
