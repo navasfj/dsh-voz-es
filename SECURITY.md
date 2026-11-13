@@ -1,27 +1,27 @@
-# Política de seguridad
+# Security policy
 
-## Versiones soportadas
+## Supported versions
 
-| Versión | Soporte |
+| Version | Supported |
 |---|---|
-| 1.0.x | Sí |
+| 1.0.x | Yes |
 
-## Reportar una vulnerabilidad
+## Reporting a vulnerability
 
-No abras un issue público. Escribe a **navasfj@gmail.com** con:
+Do not open a public issue. Email **navasfj@gmail.com** with:
 
-- qué componente (dictado, lectura, índice, scripts),
-- cómo reproducirlo,
-- impacto que crees que tiene,
-- versión de DSH y sistema operativo.
+- which component (dictation, read-aloud, index, scripts),
+- how to reproduce it,
+- the impact you think it has,
+- DSH version and operating system.
 
-Responderé en un plazo razonable y acordaremos la divulgación.
+I will reply within a reasonable time and we will agree on disclosure.
 
-## Alcance
+## Scope
 
-- El código de los plugins y sus scripts.
-- La ruta `POST /read-aloud/tts` (autenticada por DSH).
-- La descarga y verificación de modelos.
+- The plugins' code and their scripts.
+- The `POST /read-aloud/tts` route (authenticated by DSH).
+- Model download and verification.
 
-Quedan fuera el propio DeepSeek Harness, `sherpa-onnx-node`, los modelos de
-Piper/Whisper y Hugging Face.
+Out of scope: DeepSeek Harness itself, `sherpa-onnx-node`, the Piper/Whisper
+models and Hugging Face.

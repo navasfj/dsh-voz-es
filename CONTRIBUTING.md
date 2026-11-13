@@ -1,20 +1,21 @@
-# Cómo contribuir
+# Contributing
 
-Gracias por querer mejorar `dsh-voz-es`. Este proyecto son dos plugins para
-DeepSeek Harness; antes de tocar nada, instálalos y pruébalos como usuario.
+Thanks for improving `dsh-voz-es`. This project is two plugins for DeepSeek
+Harness; install them and use them as a user before changing anything.
 
-## Antes de abrir un issue
+[Español](CONTRIBUTING.es.md)
 
-- Lee [README.md](README.md), sobre todo **Requisitos** y **Problemas frecuentes**.
-- Comprueba que el bundle **Voice input** de DSH está activo (para el dictado).
-- Indica la versión de DSH (`0.2.2-rc.3`, etc.), el sistema operativo y qué plugin
-  falla.
+## Before opening an issue
+
+- Read [README.md](README.md), especially **Requirements** and **Troubleshooting**.
+- Check that DSH's **Voice input** bundle is enabled (for dictation).
+- Include the DSH version (`0.2.2-rc.3`, etc.), your OS and which plugin fails.
 
 ## Pull requests
 
-1. Abre un issue antes de cambios grandes, para acordar el enfoque.
-2. Un cambio por PR, con una descripción de qué y por qué.
-3. Pasa las comprobaciones:
+1. Open an issue before large changes so we can agree on the approach.
+2. One change per PR, with a description of what and why.
+3. Run the checks:
 
    ```bash
    node --check packages/dsh-whisper-voice/index.js
@@ -24,17 +25,17 @@ DeepSeek Harness; antes de tocar nada, instálalos y pruébalos como usuario.
    node --check packages/dsh-read-aloud/client.js
    ```
 
-4. Si cambias el comportamiento, actualiza `CHANGELOG.md` y el README.
-5. Si tocas los modelos o las rutas, mantén la verificación por tamaño y SHA-256.
+4. If behavior changes, update `CHANGELOG.md` and the README.
+5. If you touch models or paths, keep the size and SHA-256 verification.
 
-## Estilo
+## Style
 
-- JavaScript ESM, sin dependencias nuevas salvo que sea imprescindible.
-- Los plugins de cliente deben seguir el formato `window.__ModuleLoader__.load`.
-- Nada de rutas absolutas de tu equipo en el código ni en la documentación.
-- Español en la documentación de usuario; nombres de código en inglés.
+- JavaScript ESM, no new dependencies unless strictly necessary.
+- Client plugins must keep the `window.__ModuleLoader__.load` format.
+- No absolute paths from your machine, neither in code nor in docs.
+- User-facing docs in Spanish and English; code and comments in English.
 
-## Seguridad
+## Security
 
-No publiques credenciales, tokens ni datos personales en issues o PRs. Para
-vulnerabilidades, sigue [SECURITY.md](SECURITY.md).
+Do not post credentials, tokens or personal data in issues or PRs. For
+vulnerabilities, follow [SECURITY.md](SECURITY.md).

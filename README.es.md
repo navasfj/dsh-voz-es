@@ -185,7 +185,7 @@ python scripts/make-assets.py
 node scripts/make-index.mjs
 ```
 
-Guía para contribuir: [CONTRIBUTING.md](CONTRIBUTING.md). Para reportar vulnerabilidades: [SECURITY.md](SECURITY.md).
+Guía para contribuir: [CONTRIBUTING.es.md](CONTRIBUTING.es.md). Para reportar vulnerabilidades: [SECURITY.es.md](SECURITY.es.md). Normas de convivencia: [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md).
 
 ## Licencia y atribuciones
 
