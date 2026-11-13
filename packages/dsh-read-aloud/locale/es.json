@@ -1,0 +1,7 @@
+{
+  "meta": {
+    "title": "Leer respuestas en voz alta",
+    "description": "Añade un botón de altavoz al cuadro de texto que lee las respuestas del asistente con la voz del sistema.",
+    "detail": "docs/DETAIL.md"
+  }
+}

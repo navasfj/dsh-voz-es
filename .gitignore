@@ -1,0 +1,6 @@
+node_modules/
+.voice-test/
+.models/
+*.log
+.DS_Store
+Thumbs.db

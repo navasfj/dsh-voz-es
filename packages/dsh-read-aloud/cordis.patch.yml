@@ -1,0 +1,14 @@
+# Botón de lectura en voz alta de las respuestas del asistente.
+#
+# Voz neuronal local (Piper es_ES-sharvard-medium) sintetizada por el Host con
+# sherpa-onnx. El modelo se descarga una vez (~77 MB) y se verifica por SHA-256.
+# El navegador reproduce el WAV con un elemento de audio, así que el mute pausa
+# y reanuda de verdad.
+#
+# `speed` < 1 habla más despacio; 0.9 es el valor por defecto.
+- insert:
+    - id: ui-read-aloud
+      name: "@navasfj/dsh-read-aloud"
+      config:
+        speed: 0.9
+        threads: 4

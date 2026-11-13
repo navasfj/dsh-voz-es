@@ -1,0 +1,30 @@
+{
+  "name": "@navasfj/dsh-whisper-voice",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Local Whisper speech recognition for the DSH voice-input microphone, with Spanish support",
+  "type": "module",
+  "main": "index.js",
+  "exports": {
+    ".": "./index.js",
+    "./worker": "./worker.js",
+    "./locale/*.json": "./locale/*.json",
+    "./icon": "./icon.svg"
+  },
+  "files": [
+    "index.js",
+    "worker.js",
+    "cordis.patch.yml",
+    "runtime",
+    "locale",
+    "docs",
+    "icon.svg",
+    "README.md"
+  ],
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  },
+  "license": "MIT"
+}

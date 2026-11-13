@@ -1,0 +1,33 @@
+# Whisper en español como reconocedor de la entrada de voz de DSH.
+#
+# Este bundle no reimplementa la interfaz: selecciona el bundle de voz de DSH
+# (que aporta el micrófono junto a Enviar y la animación de onda) y sustituye su
+# reconocedor SenseVoice por Whisper, que sí reconoce español.
+#
+# Las capas se aplican en el orden de `dsh.profile.bundles`, así que este bundle
+# debe quedar seleccionado DESPUÉS de `@deepseek-ai/dsh-experimental-voice-input-bundle`.
+
+# El servicio de voz pasa a usar Whisper y a español por defecto.
+- id: speech-to-text
+  name: "@deepseek-ai/dsh-experimental-speech-to-text"
+  config:
+    defaultProvider: whisper-local
+    language: es
+
+# SenseVoice no reconoce español: se desactiva para que no aparezca como opción.
+- id: speech-to-text-sensevoice
+  name: "@deepseek-ai/dsh-experimental-speech-to-text-sensevoice"
+  disabled: true
+
+# El reconocedor Whisper local. Resuelve su caché de modelos en tiempo de
+# ejecución (<DSH_HOME>/speech-to-text/whisper), así que el patch no depende de
+# expresiones `!!js` del Loader. `small` da bastante más precisión en español
+# que `base` a cambio de ~375 MB y algo más de CPU; con `base` basta para
+# dictado muy claro.
+- insert:
+    - id: speech-to-text-whisper
+      name: "@navasfj/dsh-whisper-voice"
+      config:
+        model: small
+        language: es
+        threads: 4

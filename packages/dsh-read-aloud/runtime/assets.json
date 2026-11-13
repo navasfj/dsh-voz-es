@@ -1,0 +1,55 @@
+{
+  "repository": "csukuangfj/vits-piper-es_ES-sharvard-medium",
+  "revision": "2306b73bae558eddfdaee0a7ef3048a966a291d4",
+  "license": "MIT (modelo Piper es_ES-sharvard-medium; espeak-ng GPLv3 para la fonemización)",
+  "assets": [
+    {
+      "name": "es_ES-sharvard-medium.onnx",
+      "url": "https://huggingface.co/csukuangfj/vits-piper-es_ES-sharvard-medium/resolve/2306b73bae558eddfdaee0a7ef3048a966a291d4/es_ES-sharvard-medium.onnx",
+      "bytes": 76733743,
+      "sha256": "f26006cd03e2d558966fa3c49cfa9361dfa22d72197d74b6b50437cb02b8faaf"
+    },
+    {
+      "name": "tokens.txt",
+      "url": "https://huggingface.co/csukuangfj/vits-piper-es_ES-sharvard-medium/resolve/2306b73bae558eddfdaee0a7ef3048a966a291d4/tokens.txt",
+      "bytes": 921,
+      "sha256": "87c8ef66eae5473ed0cc0366b3964c736ca6c5f676c979522ea31234e47430b9"
+    },
+    {
+      "name": "espeak-ng-data/phondata",
+      "url": "https://huggingface.co/csukuangfj/vits-piper-es_ES-sharvard-medium/resolve/2306b73bae558eddfdaee0a7ef3048a966a291d4/espeak-ng-data/phondata",
+      "bytes": 550424,
+      "sha256": "4e0288957874029a8c3c9f41a8f517ad4bf18127046decbdd4b9d1d6807ce3a3"
+    },
+    {
+      "name": "espeak-ng-data/phontab",
+      "url": "https://huggingface.co/csukuangfj/vits-piper-es_ES-sharvard-medium/resolve/2306b73bae558eddfdaee0a7ef3048a966a291d4/espeak-ng-data/phontab",
+      "bytes": 55796,
+      "sha256": "886f3fa402cb0ba73d483aa8ad000af47a6b7cc06293c75a97913fba68a530f6"
+    },
+    {
+      "name": "espeak-ng-data/phonindex",
+      "url": "https://huggingface.co/csukuangfj/vits-piper-es_ES-sharvard-medium/resolve/2306b73bae558eddfdaee0a7ef3048a966a291d4/espeak-ng-data/phonindex",
+      "bytes": 39074,
+      "sha256": "3ca7b8fa3b42624e4b0f152707e7a39245fce569aa99ea47c055d9e622fcf0c4"
+    },
+    {
+      "name": "espeak-ng-data/intonations",
+      "url": "https://huggingface.co/csukuangfj/vits-piper-es_ES-sharvard-medium/resolve/2306b73bae558eddfdaee0a7ef3048a966a291d4/espeak-ng-data/intonations",
+      "bytes": 2040,
+      "sha256": "3f8af65fd3eda9759a10f021d61361c120871f463515229c925995c7f90918cc"
+    },
+    {
+      "name": "espeak-ng-data/es_dict",
+      "url": "https://huggingface.co/csukuangfj/vits-piper-es_ES-sharvard-medium/resolve/2306b73bae558eddfdaee0a7ef3048a966a291d4/espeak-ng-data/es_dict",
+      "bytes": 49252,
+      "sha256": "3fa93e251eab80838a2d6207ee58c9c847270a65fe3fae98850e0185b5a2186c"
+    },
+    {
+      "name": "espeak-ng-data/lang/roa/es",
+      "url": "https://huggingface.co/csukuangfj/vits-piper-es_ES-sharvard-medium/resolve/2306b73bae558eddfdaee0a7ef3048a966a291d4/espeak-ng-data/lang/roa/es",
+      "bytes": 63,
+      "sha256": "966aa015ea5646d79f0ca4807cf5da7339aabd3782b55cfa5eb0d8c3fc8fc588"
+    }
+  ]
+}

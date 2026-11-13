@@ -1,0 +1,7 @@
+{
+  "meta": {
+    "title": "Voz con Whisper (español)",
+    "description": "Reconocimiento local con Whisper para el micrófono de entrada de voz, con español.",
+    "detail": "docs/DETAIL.md"
+  }
+}

@@ -1,0 +1,24 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Sintaxis de los plugins
+        run: |
+          node --check packages/dsh-whisper-voice/index.js
+          node --check packages/dsh-whisper-voice/worker.js
+          node --check packages/dsh-read-aloud/index.js
+          node --check packages/dsh-read-aloud/tts-worker.js
+          node --check packages/dsh-read-aloud/client.js
+      - name: Manifiestos y assets
+        run: |
+          node -e "for (const f of ['packages/dsh-whisper-voice/package.json','packages/dsh-read-aloud/package.json','packages/dsh-whisper-voice/runtime/assets.json','packages/dsh-read-aloud/runtime/assets.json']) JSON.parse(require('fs').readFileSync(f,'utf8'))"

@@ -1,0 +1,7 @@
+{
+  "meta": {
+    "title": "Whisper voice input (Spanish)",
+    "description": "Local Whisper recognition for the voice-input microphone, with Spanish support.",
+    "detail": "docs/DETAIL.md"
+  }
+}

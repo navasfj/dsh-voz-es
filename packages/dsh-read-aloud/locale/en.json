@@ -1,0 +1,7 @@
+{
+  "meta": {
+    "title": "Read replies aloud",
+    "description": "Adds a speaker toggle to the composer that reads assistant replies with the system voice.",
+    "detail": "docs/DETAIL.md"
+  }
+}
