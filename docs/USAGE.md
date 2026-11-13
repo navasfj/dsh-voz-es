@@ -74,6 +74,13 @@ Detalles que conviene saber:
 - Si una respuesta termina mientras está silenciado, **no se lee después**: cuenta como vista y el siguiente relato empieza con la siguiente respuesta.
 - Al cambiar de sesión o cerrar la conversación, la lectura se detiene y se limpia.
 
+### Dictar mientras lee
+
+Si empiezas a dictar mientras suena una respuesta, la lectura **se pausa sola** en cuanto el micrófono empieza a capturar: si no, el micro grabaría también el altavoz y el texto saldría mezclado.
+
+- Al terminar la grabación, la lectura **continúa** donde iba si la pausa fue corta.
+- Si el dictado dura más de 5 segundos, el relato pendiente se descarta y la siguiente respuesta empieza limpia.
+
 ### Respuestas largas
 
 El texto se trocea en peticiones de hasta 800 caracteres. Mientras suena un fragmento, el siguiente **ya se está sintetizando** (prefetch), así que no hay silencios entre trozos. La primera frase de cada sesión tarda algo más: hay que cargar el modelo.

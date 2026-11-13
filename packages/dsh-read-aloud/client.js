@@ -96,6 +96,9 @@ window.__ModuleLoader__.load({
     let player = null
     let playerUrl = null
     let paused = false
+    // Set while the voice-input toolbar owns the microphone: playback stays
+    // silent so the transcript does not pick up the narration.
+    let dictating = false
     let fetching = false
     let fetcher = null
     let requestId = 0
@@ -161,7 +164,7 @@ window.__ModuleLoader__.load({
 
     /** Play the next queued chunk, using the prefetched audio when it matches. */
     async function pump() {
-      if (paused || player !== null || fetching || queue.length === 0) return
+      if (paused || dictating || player !== null || fetching || queue.length === 0) return
       fetching = true
       const id = ++requestId
       const text = queue[0]
@@ -231,6 +234,9 @@ window.__ModuleLoader__.load({
 
     /** Continue the reply the mute interrupted, when the mute was short. */
     function resumeSpeaking() {
+      // A dictation in progress keeps the microphone clean; the caller retries
+      // when the toolbar releases it.
+      if (dictating) return
       clearTimeout(discardTimer)
       discardTimer = undefined
       if (!paused) return
@@ -253,6 +259,7 @@ window.__ModuleLoader__.load({
       fetching = false
       prefetching = false
       paused = false
+      dictating = false
       releasePrefetched()
       releasePlayer()
     }
@@ -367,6 +374,52 @@ window.__ModuleLoader__.load({
         if (enabled) resumeSpeaking()
         else pauseSpeaking()
       }, [enabled])
+
+      // The microphone would otherwise record the narration and transcribe the
+      // speaker's voice too. The voice-input toolbar publishes its phase on
+      // `data-voice-activity`; while it requests or records, the narration
+      // pauses, and it continues once the toolbar stops capturing (a dictation
+      // longer than the mute window discards it instead).
+      useEffect(() => {
+        if (typeof document === 'undefined' || typeof MutationObserver !== 'function') return undefined
+        const currentPhase = () => {
+          const row = document.querySelector('[data-voice-activity]')
+          return row === null ? null : row.getAttribute('data-voice-activity')
+        }
+        const evaluate = () => {
+          const phase = currentPhase()
+          if (phase === 'requesting' || phase === 'recording') {
+            if (!dictating) {
+              dictating = true
+              if (!paused) pauseSpeaking()
+            }
+            return
+          }
+          if (!dictating) return
+          dictating = false
+          if (!enabledRef.current) return
+          if (paused) resumeSpeaking()
+          else void pump()
+        }
+        let queued = false
+        const schedule = () => {
+          if (queued) return
+          queued = true
+          queueMicrotask(() => { queued = false; evaluate() })
+        }
+        const touches = (node) => node instanceof Element
+          && (node.matches('[data-voice-activity]') || node.querySelector('[data-voice-activity]') !== null)
+        const observer = new MutationObserver((records) => {
+          for (const record of records) {
+            if (record.type === 'attributes') { schedule(); return }
+            for (const node of record.addedNodes) if (touches(node)) { schedule(); return }
+            for (const node of record.removedNodes) if (touches(node)) { schedule(); return }
+          }
+        })
+        observer.observe(document.body, { attributes: true, attributeFilter: ['data-voice-activity'], subtree: true, childList: true })
+        evaluate()
+        return () => observer.disconnect()
+      }, [])
 
       if (sessionId === undefined) return null
 

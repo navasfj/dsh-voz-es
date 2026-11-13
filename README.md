@@ -35,6 +35,7 @@ Este repositorio resuelve las tres cosas con dos plugins que se instalan en DSH 
 - **Local de verdad**: la inferencia ocurre en tu CPU; no hay cuentas, telemetría ni servicios de voz.
 - **Descarga verificada**: cada peso se fija por revisión, tamaño y SHA-256.
 - **Pausa/reanudación real** con un elemento de audio, no con la síntesis del navegador.
+- **El dictado silencia la lectura** mientras el micrófono graba, para no transcribir el altavoz.
 - **Prefetch** del siguiente fragmento: las respuestas largas no tienen silencios.
 - **Sin tocar el núcleo**: todo va por los puntos de extensión de DSH (slots, `speechToText`, rutas autenticadas).
 
