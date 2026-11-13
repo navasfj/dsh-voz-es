@@ -1,0 +1,57 @@
+{
+  "format": 1,
+  "title": "Voz en español para DSH",
+  "description": "Dictado con Whisper y lectura en voz alta con Piper, todo local.",
+  "plugins": [
+    {
+      "name": "@navasfj/dsh-whisper-voice",
+      "title": "Dictado con Whisper en español",
+      "description": "Reconocimiento local con Whisper para el micrófono de DSH, con español y modelos verificados.",
+      "author": "Navasfj",
+      "repository": {
+        "url": "https://github.com/Navasfj/dsh-voz-es",
+        "directory": "packages/dsh-whisper-voice"
+      },
+      "versions": [
+        {
+          "version": "1.0.0",
+          "publishTimestamp": 1794597599,
+          "source": {
+            "type": "git",
+            "url": "https://github.com/Navasfj/dsh-voz-es",
+            "commit": "7a0e679adb8c7b5bef5c45934447ef76cfd2e770",
+            "path": "packages/dsh-whisper-voice"
+          },
+          "engines": {
+            "dsh": ">=0.2.2-rc.2 <0.3.0"
+          }
+        }
+      ]
+    },
+    {
+      "name": "@navasfj/dsh-read-aloud",
+      "title": "Leer respuestas en voz alta",
+      "description": "Lee las respuestas con la voz local Piper, con botón de altavoz, silencio y pausa/reanudación.",
+      "author": "Navasfj",
+      "repository": {
+        "url": "https://github.com/Navasfj/dsh-voz-es",
+        "directory": "packages/dsh-read-aloud"
+      },
+      "versions": [
+        {
+          "version": "1.0.0",
+          "publishTimestamp": 1794597599,
+          "source": {
+            "type": "git",
+            "url": "https://github.com/Navasfj/dsh-voz-es",
+            "commit": "7a0e679adb8c7b5bef5c45934447ef76cfd2e770",
+            "path": "packages/dsh-read-aloud"
+          },
+          "engines": {
+            "dsh": ">=0.2.2-rc.2 <0.3.0"
+          }
+        }
+      ]
+    }
+  ]
+}
