@@ -78,8 +78,8 @@ Detalles que conviene saber:
 
 Si empiezas a dictar mientras suena una respuesta, la lectura **se pausa sola** en cuanto el micrófono empieza a capturar: si no, el micro grabaría también el altavoz y el texto saldría mezclado.
 
-- Al terminar la grabación, la lectura **continúa** donde iba si la pausa fue corta.
-- Si el dictado dura más de 5 segundos, el relato pendiente se descarta y la siguiente respuesta empieza limpia.
+- Al terminar la grabación, la lectura **no se reanuda**: el relato interrumpido se descarta en ese momento.
+- Así puedes escribir o enviar lo dictado sin que la voz vuelva por encima. La siguiente respuesta sí se lee con normalidad.
 
 ### Respuestas largas
 

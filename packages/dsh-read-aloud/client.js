@@ -396,10 +396,11 @@ window.__ModuleLoader__.load({
             return
           }
           if (!dictating) return
-          dictating = false
-          if (!enabledRef.current) return
-          if (paused) resumeSpeaking()
-          else void pump()
+          // Drop the interrupted narration as soon as the microphone is free:
+          // the user is composing, and making them wait for the mute window
+          // could swallow the reply to the message they are about to send.
+          stopSpeaking()
+          return
         }
         let queued = false
         const schedule = () => {
