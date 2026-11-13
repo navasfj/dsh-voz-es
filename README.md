@@ -1,188 +1,184 @@
+**English** | [Español](README.es.md)
+
 <p align="center">
-  <img src="assets/banner.png" alt="dsh-voz-es: dictado y lectura en voz alta para DeepSeek Harness" width="100%">
+  <img src="assets/banner.png" alt="dsh-voz-es: local Spanish dictation and read-aloud for DeepSeek Harness" width="100%">
 </p>
 
 <p align="center">
   <a href="https://github.com/Navasfj/dsh-voz-es/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/Navasfj/dsh-voz-es/actions/workflows/ci.yml/badge.svg"></a>
-  <img alt="Licencia MIT" src="https://img.shields.io/badge/licencia-MIT-22c55e">
+  <img alt="MIT license" src="https://img.shields.io/badge/license-MIT-22c55e">
   <img alt="DSH 0.2.2.x" src="https://img.shields.io/badge/DSH-0.2.2.x-3b82f6">
   <img alt="100% local" src="https://img.shields.io/badge/100%25-local-0ea5e9">
-  <img alt="Español" src="https://img.shields.io/badge/idioma-espa%C3%B1ol-f59e0b">
+  <img alt="Spanish" src="https://img.shields.io/badge/language-Spanish-f59e0b">
 </p>
 
-**Voz en español para [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness), sin nube.**
-Dicta con Whisper local y escucha las respuestas con Piper, con modelos verificados por SHA-256 y pausa/reanudación real.
+**Local Spanish voice for [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness), without the cloud.**
+Dictate with on-device Whisper and listen to replies with Piper, with SHA-256-verified models and true pause/resume.
 
 ---
 
-## Por qué existe
+## Why it exists
 
-- El audio que trae DSH de serie (SenseVoice) **no reconoce español**.
-- Las voces que expone el navegador en Windows (SAPI) **suenan enlatadas**.
-- Las alternativas habitualmente **mandan el audio a la nube**.
+- DSH ships SenseVoice, which **does not recognize Spanish**.
+- The voices the browser exposes on Windows (SAPI) **sound robotic**.
+- Most alternatives **send your audio to a cloud service**.
 
-Este repositorio resuelve las tres cosas con dos plugins que se instalan en DSH y funcionan en tu equipo.
+This repository fixes all three with two plugins that install into DSH and run on your machine.
 
-## Qué incluye
+## What's inside
 
-| Plugin | Qué hace |
+| Plugin | What it does |
 |---|---|
-| **`dsh-whisper-voice`** | Añade un micrófono que dicta con **Whisper** (ONNX, sherpa-onnx) en español. El texto se inserta en el borrador sin borrar lo escrito. |
-| **`dsh-read-aloud`** | Lee las respuestas con **Piper** (voz neuronal local). Botón junto al micrófono: verde = lee, rojo tachado = silencio. Silenciar **pausa** de verdad y reanudar continúa donde iba; a los 5 s descarta. |
+| **`dsh-whisper-voice`** | Adds a microphone that dictates with **Whisper** (ONNX, sherpa-onnx) in Spanish. The transcript is inserted at the cursor without clearing what you already wrote. |
+| **`dsh-read-aloud`** | Reads replies with **Piper** (local neural voice). Button next to the microphone: green = reading, red slashed = muted. Muting **pauses** for real; resuming continues where it stopped; after 5 s it discards. |
 
-**Detalles que marcan la diferencia**
+**Details that matter**
 
-- **Local de verdad**: la inferencia ocurre en tu CPU; no hay cuentas, telemetría ni servicios de voz.
-- **Descarga verificada**: cada peso se fija por revisión, tamaño y SHA-256.
-- **Pausa/reanudación real** con un elemento de audio, no con la síntesis del navegador.
-- **El dictado silencia la lectura** mientras el micrófono graba y la reanuda al terminar; **enviar** un mensaje corta la narración y pasa a la respuesta nueva.
-- **Prefetch** del siguiente fragmento: las respuestas largas no tienen silencios.
-- **Sin tocar el núcleo**: todo va por los puntos de extensión de DSH (slots, `speechToText`, rutas autenticadas).
+- **Truly local**: inference runs on your CPU; no accounts, no telemetry, no voice services.
+- **Verified downloads**: every weight is pinned by revision, size and SHA-256.
+- **Real pause/resume** with an audio element, not the browser's speech synthesis.
+- **Dictation silences the narration** while the microphone records and resumes when it stops; **sending** a message cuts the narration and moves on to the new reply.
+- **Prefetch**: the next fragment is synthesized while the current one plays, so long replies have no gaps.
+- **No core changes**: everything goes through DSH extension points (slots, `speechToText`, authenticated routes).
 
-## Instalación
+## Installation
 
-### Requisitos
+### Requirements
 
-- **DSH 0.2.2.x** (probado en `0.2.2-rc.2` y `0.2.2-rc.3`).
-- `sherpa-onnx-node`, incluido en la instalación de DSH.
-- Para el dictado, activa antes el bundle **Voice input** de DSH (Plugins): el plugin de Whisper ajusta sus filas y necesita que existan.
-- Windows 11 probado. El motor soporta macOS y Linux; aún sin probar.
+- **DSH 0.2.2.x** (tested on `0.2.2-rc.2` and `0.2.2-rc.3`).
+- `sherpa-onnx-node`, shipped with the DSH installation.
+- For dictation, enable DSH's **Voice input** bundle first (Plugins): the Whisper provider adjusts its rows and needs them to exist.
+- Tested on Windows 11. The engine supports macOS and Linux; not tested there yet.
 
-### Desde el índice de plugins (recomendado)
+### From the plugin index (recommended)
 
-Activa el bundle de **índices personalizados**, añade esta URL en Discover y verás las fichas con botón de instalar:
+Enable the **custom plugin indexes** bundle, add this URL in Discover, and install from the card:
 
 ```
 https://raw.githubusercontent.com/Navasfj/dsh-voz-es/main/index.json
 ```
 
-### Desde Git
+### From Git
 
-Fijado a un commit (el que quieras publicar):
+Pinned to a commit (the one you want to publish):
 
 ```
 git+https://github.com/Navasfj/dsh-voz-es.git#<commit>&path:/packages/dsh-read-aloud
 git+https://github.com/Navasfj/dsh-voz-es.git#<commit>&path:/packages/dsh-whisper-voice
 ```
 
-Orden para el dictado: **Voice input** primero y después `dsh-whisper-voice`.
+Order for dictation: **Voice input** first, then `dsh-whisper-voice`.
 
-### Desde npm (opcional)
+### From npm (optional)
 
 ```bash
 cd packages/dsh-read-aloud && npm publish --access public
 cd ../dsh-whisper-voice && npm publish --access public
 ```
 
-Después: `@navasfj/dsh-read-aloud@1.0.0` y `@navasfj/dsh-whisper-voice@1.0.0`.
+Then `@navasfj/dsh-read-aloud@1.0.0` and `@navasfj/dsh-whisper-voice@1.0.0`.
 
-## Uso
+## Usage
 
-| Acción | Cómo |
+| Action | How |
 |---|---|
-| **Dictar** | Pulsa el micrófono entre el selector de modelo y Enviar, habla y pulsa Detener. El texto se inserta en el cursor sin borrar lo que ya hay. |
-| **Leer** | Pulsa el altavoz junto al micrófono. Verde con ondas = leyendo; rojo tachado = silenciado. |
-| **Pausar** | Pulsa el altavoz una vez. Vuelve a pulsarlo en menos de 5 s para continuar. |
-| **Descartar** | Deja el mute más de 5 s: al reactivar no reanuda el relato anterior. |
+| **Dictate** | Press the microphone between the model selector and Send, speak, press Stop. The transcript is inserted at the cursor without clearing the draft. |
+| **Read** | Press the speaker next to the microphone. Green with waves = reading; red slashed = muted. |
+| **Pause** | Press the speaker once. Press it again within 5 s to continue. |
+| **Discard** | Leave it muted for more than 5 s: re-enabling does not resume the previous narration. |
 
-### El mute, paso a paso
-
-<p align="center">
-  <img src="assets/mute-estados.png" alt="Estados del mute: leyendo, silenciado y descartado" width="100%">
-</p>
-
-- **Verde**: está leyendo.
-- **Clic**: pausa el audio en el punto exacto, sin reiniciar ni volver a sintetizar.
-- **Clic en menos de 5 s**: continúa donde iba, sin repetir la frase.
-- **5 s sin reanudar**: descarta el relato pendiente. El botón sigue en rojo y la siguiente respuesta empieza de cero.
-
-El audio no se pierde al pausar: el WAV ya está descargado en el navegador. Si una respuesta termina mientras está silenciado, no se lee después.
-
-Guía completa, con el dictado paso a paso, qué lee y qué no, límites y preguntas frecuentes: **[docs/USAGE.md](docs/USAGE.md)**.
-
-## Arquitectura
+### Mute, step by step
 
 <p align="center">
-  <img src="assets/architecture.png" alt="Arquitectura: navegador, Host DSH, procesos hijos y modelos en disco" width="100%">
+  <img src="assets/mute-estados.png" alt="Mute states: reading, muted and discarded" width="100%">
 </p>
 
-- El navegador captura a **16 kHz mono** y sube el WAV por el canal autenticado de DSH.
-- El Host encola el trabajo y lo pasa a un **proceso hijo** (Whisper o Piper) por loopback con token.
-- La lectura devuelve un WAV que el navegador reproduce con un elemento de audio.
-- Los modelos viven en `%USERPROFILE%\.dsh\...` y se verifican antes de usarse.
+- **Green**: it is reading.
+- **Click**: pauses the audio at the exact point, without restarting or re-synthesizing.
+- **Click within 5 s**: continues where it stopped, without repeating the sentence.
+- **5 s without resuming**: discards the pending narration. The button stays red and the next reply starts fresh.
 
-## Configuración
+Audio is not lost on pause: the WAV is already downloaded in the browser. A reply that finishes while muted is not read later.
 
-Cada plugin se ajusta en su fila de `cordis.patch.yml`:
+Full guide with dictation, what is read and what is not, limits and FAQ: **[docs/USAGE.en.md](docs/USAGE.en.md)** ([español](docs/USAGE.md)).
+
+## Architecture
+
+<p align="center">
+  <img src="assets/architecture.png" alt="Architecture: browser, DSH Host, child processes and models on disk" width="100%">
+</p>
+
+- The browser captures at **16 kHz mono** and uploads the WAV over DSH's authenticated channel.
+- The Host queues the work and hands it to a **child process** (Whisper or Piper) over loopback with a token.
+- Reading returns a WAV that the browser plays with an audio element.
+- Models live under `%USERPROFILE%\.dsh\...` and are verified before use.
+
+## Configuration
+
+Each plugin is configured in its `cordis.patch.yml` row:
 
 ```yaml
 - insert:
     - id: speech-to-text-whisper
       name: "@navasfj/dsh-whisper-voice"
       config:
-        model: small        # tiny | base | small (por defecto small)
+        model: small        # tiny | base | small (default small)
         language: es
         threads: 4
 
     - id: ui-read-aloud
       name: "@navasfj/dsh-read-aloud"
       config:
-        speed: 0.9          # 0.8 más lento, 1.0 ritmo natural
+        speed: 0.9          # 0.8 slower, 1.0 natural pace
         threads: 4
 ```
 
-`modelDirectory` permite usar pesos ya presentes en disco; entonces no se descarga nada.
+`modelDirectory` lets you use weights already on disk; nothing is downloaded then.
 
-## Modelos y caché
+## Models and cache
 
-| Modelo | Tamaño | Ruta |
+| Model | Size | Path |
 |---|---|---|
 | Whisper `small` INT8 | ~375 MB | `~/.dsh/speech-to-text/whisper/models/whisper-small` |
 | Piper `es_ES-sharvard-medium` + espeak | ~77 MB | `~/.dsh/read-aloud/models/piper-es-sharvard` |
 
-La primera vez que se usa cada plugin se descarga su modelo. Desinstalar el plugin no borra la caché.
+Each plugin downloads its model on first use. Uninstalling the plugin does not delete the cache.
 
-## Privacidad
+## Privacy
 
-- El audio va del navegador al Host por el canal autenticado de DSH y de ahí al proceso local de Whisper.
-- La lectura sintetiza en el Host con Piper; el navegador solo reproduce el WAV.
-- Sin telemetría, sin cuentas, sin servicios de voz. La única red es la descarga inicial del modelo.
+- Audio goes from the browser to the Host over DSH's authenticated channel and then to the local Whisper process.
+- Reading synthesizes in the Host with Piper; the browser only plays the WAV.
+- No telemetry, no accounts, no voice services. The only network use is the initial model download.
 
-## Problemas frecuentes
+## Troubleshooting
 
-| Síntoma | Causa y solución |
+| Symptom | Cause and fix |
 |---|---|
-| No aparece el micrófono | El bundle **Voice input** no está activo o no se recargó la página. Actívalo y recarga con Ctrl+Shift+R. |
-| El micrófono aparece pero no transcribe | Falta el modelo o el proceso de Whisper no arrancó. Mira Plugins → Voz con Whisper y la consola del navegador. |
-| La lectura no suena | Comprueba que el botón está verde; si acabas de instalar, espera a que termine la descarga del modelo. |
-| La primera transcripción tarda | `small` carga el modelo en el primer uso; después queda caliente. Con `base` es más rápido y menos preciso. |
-| Descarga bloqueada | Usa `modelDirectory` con los pesos ya descargados, o revisa el acceso a Hugging Face. |
+| No microphone appears | The **Voice input** bundle is not enabled or the page was not reloaded. Enable it and press Ctrl+Shift+R. |
+| The microphone appears but does not transcribe | The model is missing or the Whisper process did not start. Check Plugins → Whisper voice and the browser console. |
+| Reading is silent | Make sure the button is green; if you just installed, wait for the Piper model download. |
+| The first transcription is slow | `small` loads the model on first use; it stays warm afterwards. `base` is faster and less accurate. |
+| The download is blocked | Use `modelDirectory` with weights already on disk, or check access to Hugging Face. |
 
-## Desarrollo
+## Development
 
 ```bash
-# Sintaxis de los plugins
+# Plugin syntax
 node --check packages/dsh-whisper-voice/index.js
 node --check packages/dsh-whisper-voice/worker.js
 node --check packages/dsh-read-aloud/index.js
 node --check packages/dsh-read-aloud/tts-worker.js
 node --check packages/dsh-read-aloud/client.js
 
-# Regenerar imágenes
+# Regenerate images
 python scripts/make-assets.py
 
-# Regenerar el índice de Discover (fija el commit actual)
+# Regenerate the Discover index (pins the current commit)
 node scripts/make-index.mjs
 ```
 
-Guía para contribuir: [CONTRIBUTING.md](CONTRIBUTING.md). Para reportar vulnerabilidades: [SECURITY.md](SECURITY.md).
+Contributing: [CONTRIBUTING.md](CONTRIBUTING.md). Reporting vulnerabilities: [SECURITY.md](SECURITY.md).
 
-## Licencia y atribuciones
+## License and credits
 
-Código **MIT** — ver [LICENSE](LICENSE). Los modelos y el runtime tienen sus propias licencias (Piper, espeak-ng, Whisper, sherpa-onnx): ver [NOTICE.md](NOTICE.md).
-
----
-
-### English
-
-Local Spanish voice for DeepSeek Harness: Whisper dictation and Piper text-to-speech, both on-device. Requires DSH 0.2.2.x and the shipped `sherpa-onnx-node`; enable the **Voice input** bundle before installing the Whisper provider. Models download once from Hugging Face and are verified by size and SHA-256. No telemetry, no accounts. Code MIT.
+Code **MIT** — see [LICENSE](LICENSE). Models and runtime keep their own licenses (Piper, espeak-ng, Whisper, sherpa-onnx): see [NOTICE.md](NOTICE.md).

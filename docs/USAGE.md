@@ -1,3 +1,5 @@
+[English](USAGE.en.md) | **Español**
+
 # Guía de uso
 
 Esta guía explica qué hace cada botón, qué ocurre por dentro y por qué el mute se comporta así.
