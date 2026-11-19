@@ -13,7 +13,7 @@
 </p>
 
 **Voz en español para [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness), sin nube.**
-Dicta con Whisper local y escucha las respuestas con Piper, con modelos verificados por SHA-256 y pausa/reanudación real.
+Dicta **mientras hablas** con un modelo español en streaming, perfílalo con Parakeet y escucha las respuestas con Piper: modelos verificados por SHA-256 y sin nube.
 
 ---
 
@@ -29,7 +29,7 @@ Este repositorio resuelve las tres cosas con dos plugins que se instalan en DSH 
 
 | Plugin | Qué hace |
 |---|---|
-| **`dsh-whisper-voice`** | Añade un micrófono que dicta con **Whisper** (ONNX, sherpa-onnx) en español. El texto se inserta en el borrador sin borrar lo escrito. |
+| **`dsh-whisper-voice`** | El reconocedor local del micrófono: **Parakeet v3** (NeMo, 25 idiomas europeos) por defecto, o **Whisper** (`small`, `base`, `tiny`) como opción. El texto final se inserta en el borrador sin borrar lo escrito. |
 | **`dsh-dictado-vivo`** | Dicta **mientras hablas**: un modelo español en streaming (Kroko) escribe en el compositor y el texto queda editable para revisarlo antes de enviar. Añade una página de pruebas de sonido a la barra lateral. |
 | **`dsh-read-aloud`** | Lee las respuestas con **Piper** (voz neuronal local). Botón junto al micrófono: verde = lee, rojo tachado = silencio. Silenciar **pausa** de verdad y reanudar continúa donde iba; a los 5 s descarta. |
 
@@ -48,7 +48,7 @@ Este repositorio resuelve las tres cosas con dos plugins que se instalan en DSH 
 
 - **DSH 0.2.2.x** (probado en `0.2.2-rc.2` y `0.2.2-rc.3`).
 - `sherpa-onnx-node`, incluido en la instalación de DSH.
-- Para el dictado, activa antes el bundle **Voice input** de DSH (Plugins): el plugin de Whisper ajusta sus filas y necesita que existan.
+- Para el dictado, activa antes el bundle **Voice input** de DSH (Plugins): el plugin de dictado ajusta sus filas y necesita que existan.
 - Windows 11 probado. El motor soporta macOS y Linux; aún sin probar.
 
 ### Desde el índice de plugins (recomendado)
@@ -69,7 +69,7 @@ git+https://github.com/Navasfj/dsh-voz-es.git#<commit>&path:/packages/dsh-whispe
 git+https://github.com/Navasfj/dsh-voz-es.git#<commit>&path:/packages/dsh-dictado-vivo
 ```
 
-Orden para el dictado: **Voice input** primero y después `dsh-whisper-voice`.
+Orden para el dictado: **Voice input** primero y después `dsh-whisper-voice` y/o `dsh-dictado-vivo`.
 
 ### Desde npm (opcional)
 
@@ -78,7 +78,7 @@ cd packages/dsh-read-aloud && npm publish --access public
 cd ../dsh-whisper-voice && npm publish --access public
 ```
 
-Después: `@navasfj/dsh-read-aloud@1.0.0` y `@navasfj/dsh-whisper-voice@1.0.0`.
+Después: `@navasfj/dsh-read-aloud@1.1.0`, `@navasfj/dsh-whisper-voice@1.1.0` y `@navasfj/dsh-dictado-vivo@1.1.0`.
 
 ## Uso
 
@@ -119,7 +119,7 @@ El compositor real: el altavoz de lectura queda a la izquierda del micrófono de
 </p>
 
 - El navegador captura a **16 kHz mono** y sube el WAV por el canal autenticado de DSH.
-- El Host encola el trabajo y lo pasa a un **proceso hijo** (Whisper o Piper) por loopback con token.
+- El Host encola el trabajo y lo pasa a un **proceso hijo** (Parakeet, Whisper o Piper) por loopback con token.
 - La lectura devuelve un WAV que el navegador reproduce con un elemento de audio.
 - Los modelos viven en `%USERPROFILE%\.dsh\...` y se verifican antes de usarse.
 
@@ -149,14 +149,16 @@ Cada plugin se ajusta en su fila de `cordis.patch.yml`:
 
 | Modelo | Tamaño | Ruta |
 |---|---|---|
-| Whisper `small` INT8 | ~375 MB | `~/.dsh/speech-to-text/whisper/models/whisper-small` |
+| Parakeet v3 INT8 (por defecto) | ~670 MB | `~/.dsh/speech-to-text/whisper/models/whisper-parakeet-v3` |
+| Kroko español en streaming (dsh-dictado-vivo) | ~155 MB | `~/.dsh/dictado-vivo/models/kroko-es` |
+| Whisper `small` INT8 (opcional) | ~375 MB | `~/.dsh/speech-to-text/whisper/models/whisper-small` |
 | Piper `es_ES-sharvard-medium` + espeak | ~77 MB | `~/.dsh/read-aloud/models/piper-es-sharvard` |
 
 La primera vez que se usa cada plugin se descarga su modelo. Desinstalar el plugin no borra la caché.
 
 ## Privacidad
 
-- El audio va del navegador al Host por el canal autenticado de DSH y de ahí al proceso local de Whisper.
+- El audio va del navegador al Host por el canal autenticado de DSH y de ahí al proceso local de reconocimiento.
 - La lectura sintetiza en el Host con Piper; el navegador solo reproduce el WAV.
 - Sin telemetría, sin cuentas, sin servicios de voz. La única red es la descarga inicial del modelo.
 
@@ -165,7 +167,7 @@ La primera vez que se usa cada plugin se descarga su modelo. Desinstalar el plug
 | Síntoma | Causa y solución |
 |---|---|
 | No aparece el micrófono | El bundle **Voice input** no está activo o no se recargó la página. Actívalo y recarga con Ctrl+Shift+R. |
-| El micrófono aparece pero no transcribe | Falta el modelo o el proceso de Whisper no arrancó. Mira Plugins → Voz con Whisper y la consola del navegador. |
+| El micrófono aparece pero no transcribe | Falta el modelo o el proceso de reconocimiento no arrancó. Mira Plugins → dictado local y la consola del navegador. |
 | La lectura no suena | Comprueba que el botón está verde; si acabas de instalar, espera a que termine la descarga del modelo. |
 | La primera transcripción tarda | `small` carga el modelo en el primer uso; después queda caliente. Con `base` es más rápido y menos preciso. |
 | Descarga bloqueada | Usa `modelDirectory` con los pesos ya descargados, o revisa el acceso a Hugging Face. |
@@ -191,4 +193,4 @@ Guía para contribuir: [CONTRIBUTING.es.md](CONTRIBUTING.es.md). Para reportar v
 
 ## Licencia y atribuciones
 
-Código **MIT** — ver [LICENSE](LICENSE). Los modelos y el runtime tienen sus propias licencias (Piper, espeak-ng, Whisper, sherpa-onnx): ver [NOTICE.md](NOTICE.md).
+Código **MIT** — ver [LICENSE](LICENSE). Los modelos y el runtime tienen sus propias licencias (Parakeet, Kroko, Piper, espeak-ng, Whisper, sherpa-onnx): ver [NOTICE.md](NOTICE.md).

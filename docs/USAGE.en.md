@@ -6,12 +6,12 @@ This guide explains what each button does, what happens under the hood, and why 
 
 ---
 
-## 1. Dictation (dsh-whisper-voice)
+## 1. Dictation (dsh-whisper-voice and dsh-dictado-vivo)
 
 ### Before dictating
 
-1. DSH's **Voice input** bundle must be enabled (Plugins). The Whisper provider adjusts its configuration; without it there is no microphone.
-2. The first time, DSH downloads the Whisper model (~375 MB with `small`) and verifies it. Status is under **Plugins → Whisper voice**.
+1. DSH's **Voice input** bundle must be enabled (Plugins). The dictation provider adjusts its configuration; without it there is no microphone.
+2. The first time, DSH downloads the model (**Parakeet v3**, ~670 MB; or Whisper `small`, ~375 MB if you pick it) and verifies it. Status is under **Plugins → local dictation**.
 3. The browser asks for microphone permission the first time.
 
 ### Recording
@@ -30,13 +30,13 @@ The text is not inserted automatically: **Insert** or discard appears next to th
 - Max recording: **120 seconds** and **4 MB** of WAV.
 - The browser converts to **16 kHz mono**; the Host validates the WAV before transcribing.
 - Models: `tiny` (103 MB, fast and loose), `base` (160 MB, very clear dictation) and `small` (375 MB, the default). With `small` an 8 s sentence takes about 7 s on CPU; with `base`, about 2 s.
-- Language: `es` by default. `auto` lets Whisper detect it.
+- Language: `es` by default. `auto` lets the engine detect it; Parakeet is multilingual and needs no hint.
 
 ### Under the hood
 
 1. The browser records and encodes the WAV.
 2. It uploads it to the Host over DSH's authenticated channel.
-3. The Host hands it to a **child process** with Whisper (sherpa-onnx) so the UI is not blocked.
+3. The Host hands it to a **child process** with Parakeet or Whisper (sherpa-onnx) so the UI is not blocked.
 4. The text comes back and is inserted into the draft.
 
 Audio is **transient**: it is not stored as a session event or an attachment. Only what you send enters the conversation.
@@ -105,7 +105,7 @@ The voice is Piper `es_ES-sharvard-medium` (female, 22 kHz). Switching to anothe
 
 ## 3. Privacy
 
-- Microphone audio goes from the browser to the Host over DSH's authenticated channel and then to the local Whisper process.
+- Microphone audio goes from the browser to the Host over DSH's authenticated channel and then to the local recognizer process.
 - Reading synthesizes in the Host with Piper; the browser only plays the WAV.
 - No telemetry, no accounts and no voice services.
 - The only network use is the **initial download** of the models from Hugging Face, verified by size and SHA-256.
@@ -118,7 +118,7 @@ The voice is Piper `es_ES-sharvard-medium` (female, 22 kHz). Switching to anothe
 The Voice input bundle is not enabled or the page was not reloaded. Enable it in Plugins and press Ctrl+Shift+R.
 
 **The microphone appears but does not transcribe.**
-Check Plugins → Whisper voice: model downloaded, ready state and errors. If you just installed it, wait for the download to finish.
+Check Plugins → local dictation: model downloaded, ready state and errors. If you just installed it, wait for the download to finish.
 
 **Reading is silent.**
 Make sure the button is green. If you just installed, wait for the Piper model download. Check the system volume too.
@@ -130,7 +130,7 @@ More than 5 seconds passed: that is the intended behavior. Press the button and 
 Yes, with `speed` in the plugin configuration (0.8–1.0).
 
 **Dictation repeats the same sentence several times.**
-It was a Whisper loop triggered by silence. The plugin now trims leading and trailing silence and collapses repeated sentences; if it still happens, dictate without long pauses before speaking or at the end.
+It was a Whisper loop triggered by silence. The plugin trims leading and trailing silence (Whisper only; Parakeet does not need it) and collapses repeated sentences; if it still happens, dictate without long pauses before speaking or at the end.
 
 **Does it work offline?**
 Yes, once the models are downloaded. The first setup needs network.

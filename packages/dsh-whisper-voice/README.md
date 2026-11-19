@@ -1,6 +1,6 @@
 # @navasfj/dsh-whisper-voice
 
-Proveedor de reconocimiento **Whisper local** para el micrófono de entrada de voz
+Proveedor de reconocimiento **local** para el micrófono de entrada de voz: **Parakeet v3** por defecto y **Whisper** como opción
 de DeepSeek Harness, con español.
 
 ## Por qué existe

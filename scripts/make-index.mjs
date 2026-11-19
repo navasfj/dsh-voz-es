@@ -39,8 +39,8 @@ if (!/^[0-9a-f]{40}$/.test(commit)) {
 const packages = [
   {
     directory: 'packages/dsh-whisper-voice',
-    title: 'Dictado con Whisper en español',
-    description: 'Reconocimiento local con Whisper para el micrófono de DSH, con español y modelos verificados.',
+    title: 'Dictado local con Parakeet',
+    description: 'Parakeet v3 por defecto y Whisper como opción: reconocimiento local para el micrófono, en español y con modelos verificados.',
   },
   {
     directory: 'packages/dsh-read-aloud',
@@ -72,7 +72,7 @@ const packages = [
 const index = {
   format: 1,
   title: 'Voz en español para DSH',
-  description: 'Dictado con Whisper y lectura en voz alta con Piper, todo local.',
+  description: 'Dictado en vivo y lectura en voz alta, todo local: Parakeet, Kroko y Piper.',
   plugins: packages,
 }
 

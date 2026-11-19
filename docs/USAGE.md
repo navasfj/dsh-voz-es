@@ -6,12 +6,12 @@ Esta guía explica qué hace cada botón, qué ocurre por dentro y por qué el m
 
 ---
 
-## 1. Dictado (dsh-whisper-voice)
+## 1. Dictado (dsh-whisper-voice y dsh-dictado-vivo)
 
 ### Antes de dictar
 
-1. El bundle **Voice input** de DSH debe estar activo (Plugins). El plugin de Whisper ajusta su configuración; sin él no hay micrófono.
-2. La primera vez, DSH descarga el modelo de Whisper (~375 MB con `small`) y lo verifica. El estado se ve en **Plugins → Voz con Whisper**.
+1. El bundle **Voice input** de DSH debe estar activo (Plugins). El plugin de dictado ajusta su configuración; sin él no hay micrófono.
+2. La primera vez, DSH descarga el modelo (**Parakeet v3**, ~670 MB; o Whisper `small`, ~375 MB si lo eliges) y lo verifica. El estado se ve en **Plugins → dictado local**.
 3. El navegador pedirá permiso de micrófono la primera vez.
 
 ### Grabar
@@ -30,13 +30,13 @@ El texto no se inserta solo: aparece **Insertar** o descartar junto al micrófon
 - Grabación máxima: **120 segundos** y **4 MB** de WAV.
 - El navegador convierte a **16 kHz mono**; el Host valida el WAV antes de transcribir.
 - Modelos: `tiny` (103 MB, rápido y flojo), `base` (160 MB, dictado muy claro) y `small` (375 MB, el valor por defecto). Con `small` una frase de 8 s tarda unos 7 s en CPU; con `base`, unos 2 s.
-- Idioma: `es` por defecto. `auto` deja que Whisper lo detecte.
+- Idioma: `es` por defecto. `auto` deja que el motor lo detecte; Parakeet es multilingüe y no necesita pista.
 
 ### Qué ocurre por dentro
 
 1. El navegador graba y codifica el WAV.
 2. Lo envía al Host por el canal autenticado de DSH.
-3. El Host lo pasa a un **proceso hijo** con Whisper (sherpa-onnx) para no bloquear la interfaz.
+3. El Host lo pasa a un **proceso hijo** con Parakeet o Whisper (sherpa-onnx) para no bloquear la interfaz.
 4. Vuelve el texto y se inserta en el borrador.
 
 El audio es **transitorio**: no se guarda como evento de sesión ni como adjunto. Solo entra en la conversación lo que tú envíes.
@@ -105,7 +105,7 @@ La voz es Piper `es_ES-sharvard-medium` (femenina, 22 kHz). Cambiar a otra voz d
 
 ## 3. Privacidad
 
-- El audio del micrófono va del navegador al Host por el canal autenticado de DSH y de ahí al proceso local de Whisper.
+- El audio del micrófono va del navegador al Host por el canal autenticado de DSH y de ahí al proceso local de reconocimiento.
 - La lectura sintetiza en el Host con Piper; el navegador solo reproduce el WAV.
 - Sin telemetría, sin cuentas y sin servicios de voz.
 - La única red que se usa es la **descarga inicial** de los modelos desde Hugging Face, verificada por tamaño y SHA-256.
@@ -118,7 +118,7 @@ La voz es Piper `es_ES-sharvard-medium` (femenina, 22 kHz). Cambiar a otra voz d
 El bundle Voice input no está activo o la página no se recargó. Actívalo en Plugins y recarga con Ctrl+Shift+R.
 
 **El micrófono aparece pero no transcribe.**
-Mira Plugins → Voz con Whisper: modelo descargado, estado listo y errores. Si acabas de instalar, espera a que termine la descarga.
+Mira Plugins → dictado local: modelo descargado, estado listo y errores. Si acabas de instalar, espera a que termine la descarga.
 
 **La lectura no suena.**
 Comprueba que el botón está verde. Si acabas de instalar, espera a que se descargue el modelo de Piper. Revisa también el volumen del sistema.
@@ -130,7 +130,7 @@ Han pasado más de 5 segundos: es el comportamiento previsto. Pulsa el botón y 
 Sí, con `speed` en la configuración del plugin (0.8–1.0).
 
 **El dictado repite la misma frase varias veces.**
-Era un bucle de Whisper al encontrarse silencio. El plugin ahora recorta el silencio inicial y final de la grabación y colapsa las frases repetidas; si aun así aparece, dicta sin dejar pausas largas antes de hablar o al terminar.
+Era un bucle de Whisper al encontrarse silencio. El plugin recorta el silencio inicial y final (solo con Whisper; Parakeet no lo necesita) y colapsa las frases repetidas; si aun así aparece, dicta sin dejar pausas largas antes de hablar o al terminar.
 
 **¿Funciona sin internet?**
 Sí, una vez descargados los modelos. La primera preparación necesita red.

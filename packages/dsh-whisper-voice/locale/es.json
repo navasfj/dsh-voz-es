@@ -1,7 +1,7 @@
 {
   "meta": {
-    "title": "Voz con Whisper (español)",
-    "description": "Reconocimiento local con Whisper para el micrófono de entrada de voz, con español.",
+    "title": "Dictado local (Parakeet y Whisper)",
+    "description": "Reconocimiento local para el micrófono: Parakeet v3 por defecto y Whisper como opción, en español.",
     "detail": "docs/DETAIL.md"
   }
 }

@@ -1,4 +1,4 @@
-# Voz con Whisper (español)
+# Dictado local: Parakeet y Whisper
 
 Añade un reconocedor **Whisper local** a la entrada de voz de DeepSeek Harness y
 lo deja seleccionado por defecto en español. La interfaz no se duplica: el botón

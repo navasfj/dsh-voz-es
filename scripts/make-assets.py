@@ -32,7 +32,7 @@ AMBER = (245, 158, 11)
 COPY = {
     "es": {
         "banner": {
-            "subtitle": ["Dictado y lectura en voz alta", "100 % local · en español"],
+            "subtitle": ["Dictado en vivo y lectura", "100 % local · en español"],
             "card": "Conversación",
             "placeholder": ["Envía mensajes o ejecuta una tarea,", "/ comandos, @ archivos o sesiones"],
             "mode": "Escritura",
@@ -47,8 +47,8 @@ COPY = {
             "subtitle": "Todo ocurre en el equipo: el audio y el texto no salen a ningún servicio",
             "browser": ("Navegador (DSH Web)", ["Micrófono + waveform", "Sube WAV a 16 kHz", "Reproduce el WAV", "Inserta el texto"]),
             "host": ("Host DSH", ["Rutas autenticadas", "Cola y procesos hijos", "Sin bloquear la interfaz"]),
-            "child": ("Procesos hijos", ["Whisper (ASR)", "Piper (TTS)"]),
-            "disk": ("Modelos en disco", ["~/.dsh/…/whisper-small", "~/.dsh/…/piper-es", "Verificados por SHA-256"]),
+            "child": ("Procesos hijos", ["Parakeet (ASR)", "Piper (TTS)"]),
+            "disk": ("Modelos en disco", ["~/.dsh/…/parakeet-v3", "~/.dsh/…/kroko-es", "Verificados por SHA-256"]),
             "arrows": ["audio WAV", "texto / WAV", "HTTP + token", "resultado", "lee"],
             "no_network": "Sin red en tiempo de uso",
             "no_network_detail": "Los modelos se descargan una vez y se verifican; después todo es local.",
@@ -70,7 +70,7 @@ COPY = {
     },
     "en": {
         "banner": {
-            "subtitle": ["Dictation and read-aloud", "100% local · Spanish"],
+            "subtitle": ["Live dictation and read-aloud", "100% local · Spanish"],
             "card": "Conversation",
             "placeholder": ["Send messages or run a task,", "/ commands, @ files or sessions"],
             "mode": "Writing",
@@ -85,8 +85,8 @@ COPY = {
             "subtitle": "Everything happens on your machine: audio and text never leave it",
             "browser": ("Browser (DSH Web)", ["Microphone + waveform", "Uploads 16 kHz WAV", "Plays the WAV", "Inserts the text"]),
             "host": ("DSH Host", ["Authenticated routes", "Queue and child processes", "No UI blocking"]),
-            "child": ("Child processes", ["Whisper (ASR)", "Piper (TTS)"]),
-            "disk": ("Models on disk", ["~/.dsh/…/whisper-small", "~/.dsh/…/piper-es", "Verified by SHA-256"]),
+            "child": ("Child processes", ["Parakeet (ASR)", "Piper (TTS)"]),
+            "disk": ("Models on disk", ["~/.dsh/…/parakeet-v3", "~/.dsh/…/kroko-es", "Verified by SHA-256"]),
             "arrows": ["audio WAV", "text / WAV", "HTTP + token", "result", "reads"],
             "no_network": "No network at runtime",
             "no_network_detail": "Models are downloaded once and verified; after that everything is local.",
@@ -190,7 +190,7 @@ def banner(t: dict, out: str) -> None:
     draw.text((76, 250), t["subtitle"][0], font=font("segoeui.ttf", 36), fill=(199, 210, 254))
     draw.text((76, 296), t["subtitle"][1], font=font("segoeui.ttf", 36), fill=(199, 210, 254))
 
-    chips = ["Whisper small", "Piper", "MIT", "DSH 0.2.2+"]
+    chips = ["Parakeet", "Kroko", "Piper", "100 % local"]
     x = 76
     for label in chips:
         width = draw.textlength(label, font=font("segoeuib.ttf", 18)) + 34
