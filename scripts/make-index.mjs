@@ -47,6 +47,11 @@ const packages = [
     title: 'Leer respuestas en voz alta',
     description: 'Lee las respuestas con la voz local Piper, con botón de altavoz, silencio y pausa/reanudación.',
   },
+  {
+    directory: 'packages/dsh-dictado-vivo',
+    title: 'Dictado en vivo en el compositor',
+    description: 'Escribe mientras hablas con un modelo español en streaming y deja el texto editable antes de enviar.',
+  },
 ].map((entry) => {
   const manifest = JSON.parse(readFileSync(join(root, entry.directory, 'package.json'), 'utf8'))
   return {
