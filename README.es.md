@@ -30,6 +30,7 @@ Este repositorio resuelve las tres cosas con dos plugins que se instalan en DSH 
 | Plugin | Qué hace |
 |---|---|
 | **`dsh-whisper-voice`** | Añade un micrófono que dicta con **Whisper** (ONNX, sherpa-onnx) en español. El texto se inserta en el borrador sin borrar lo escrito. |
+| **`dsh-dictado-vivo`** | Dicta **mientras hablas**: un modelo español en streaming (Kroko) escribe en el compositor y el texto queda editable para revisarlo antes de enviar. Añade una página de pruebas de sonido a la barra lateral. |
 | **`dsh-read-aloud`** | Lee las respuestas con **Piper** (voz neuronal local). Botón junto al micrófono: verde = lee, rojo tachado = silencio. Silenciar **pausa** de verdad y reanudar continúa donde iba; a los 5 s descarta. |
 
 **Detalles que marcan la diferencia**
@@ -65,6 +66,7 @@ Fijado a un commit (el que quieras publicar):
 ```
 git+https://github.com/Navasfj/dsh-voz-es.git#<commit>&path:/packages/dsh-read-aloud
 git+https://github.com/Navasfj/dsh-voz-es.git#<commit>&path:/packages/dsh-whisper-voice
+git+https://github.com/Navasfj/dsh-voz-es.git#<commit>&path:/packages/dsh-dictado-vivo
 ```
 
 Orden para el dictado: **Voice input** primero y después `dsh-whisper-voice`.

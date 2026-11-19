@@ -3,6 +3,25 @@
 Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/).
 Versionado [SemVer](https://semver.org/lang/es/).
 
+## [1.1.0] — 2026-11-19
+
+### Añadido
+
+- `dsh-dictado-vivo`: dictado en vivo en el compositor. Kroko español en
+  streaming escribe mientras hablas; al parar el texto queda listo para editar
+  y enviar. Incluye una página de pruebas de sonido en la barra lateral.
+- `dsh-whisper-voice`: modelo `parakeet-v3` (transductor NeMo, 25 idiomas
+  europeos) como opción y por defecto; más preciso y cuatro veces más rápido
+  que Whisper `small`.
+
+### Corregido
+
+- `dsh-whisper-voice`: el recorte de silencio ya no se aplica a los
+  transductores; cortaba el final de la frase y arrastraba la primera palabra.
+- `dsh-read-aloud`: nivel normalizado a −1 dBFS, 150 ms de silencio inicial,
+  lectura desde la primera frase del streaming y motor caliente media hora.
+- `dsh-dictado-vivo`: al parar no duplica el texto y el micrófono se cierra en
+  el acto.
 ## [1.0.0] — 2026-11-13
 
 ### Añadido

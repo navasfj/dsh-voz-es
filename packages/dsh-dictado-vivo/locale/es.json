@@ -1,0 +1,7 @@
+{
+  "meta": {
+    "title": "Dictado en vivo",
+    "description": "Escribe mientras hablas: el texto aparece en el cuadro de mensaje y Whisper lo reescribe al parar.",
+    "detail": "docs/DETAIL.md"
+  }
+}

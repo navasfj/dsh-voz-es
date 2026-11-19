@@ -1,0 +1,17 @@
+# Dictado en vivo en el compositor.
+#
+# Sustituye el botón de micrófono del bundle de voz de DSH por uno que escribe
+# mientras hablas: un modelo Kroko en streaming redacta el texto provisional y,
+# al parar, el proveedor Whisper configurado reescribe el texto definitivo.
+#
+# El bundle de voz sigue aportando el servicio `speechToText` (selección de
+# proveedor, modelo y ajustes); solo se desactiva su botón de la barra.
+- id: ui-voice-input
+  disabled: true
+
+- insert:
+    - id: dictado-vivo
+      name: "@navasfj/dsh-dictado-vivo"
+      config:
+        threads: 4
+        language: es

@@ -29,7 +29,7 @@ const MAX_TEXT = 4000
 /** Ceiling for one WAV response (a few minutes of 22 kHz mono audio). */
 const MAX_RESPONSE_BYTES = 20 * 1024 * 1024
 /** Stop the inference process after this much inactivity; the model stays on disk. */
-const IDLE_TIMEOUT_MS = 5 * 60 * 1000
+const IDLE_TIMEOUT_MS = 30 * 60 * 1000
 
 const ASSETS = JSON.parse(readFileSync(new URL('./runtime/assets.json', import.meta.url), 'utf8'))
 const WORKER = fileURLToPath(new URL('./tts-worker.js', import.meta.url))
@@ -46,7 +46,12 @@ function normalizeConfig(raw) {
   const value = raw !== null && typeof raw === 'object' ? raw : {}
   const speed = typeof value.speed === 'number' && value.speed >= 0.5 && value.speed <= 2 ? value.speed : DEFAULT_SPEED
   const threads = Number.isSafeInteger(value.threads) && value.threads > 0 ? value.threads : 4
-  return { speed, threads }
+  // Half an hour keeps the Piper model loaded between replies. With the old
+  // five minutes, a reply after a short pause paid the whole model load again
+  // and the reading seemed not to start.
+  const idleTimeoutMs = Number.isSafeInteger(value.idleTimeoutMs) && value.idleTimeoutMs > 0 ? value.idleTimeoutMs : IDLE_TIMEOUT_MS
+  const preload = typeof value.preload === 'boolean' ? value.preload : true
+  return { speed, threads, idleTimeoutMs, preload }
 }
 
 /**
@@ -179,11 +184,25 @@ class Synthesizer {
     if (!response.ok) throw new Error(`synthesis worker returned ${response.status}`)
     const wav = Buffer.from(await response.arrayBuffer())
     if (wav.length < 44 || wav.length > MAX_RESPONSE_BYTES) throw new Error('synthesis worker returned invalid audio')
+    this.#scheduleIdle()
+    return wav
+  }
+
+  /**
+   * Load the model before the first reply needs it.
+   * @returns after the worker is ready.
+   */
+  async warm() {
+    await this.#ensure()
+    this.#scheduleIdle()
+  }
+
+  #scheduleIdle() {
+    clearTimeout(this.#idle)
     this.#idle = setTimeout(() => {
       this.#idle = undefined
       void this.#stop().catch((error) => { this.ctx.logger.warn('read-aloud: idle stop failed', error) })
-    }, IDLE_TIMEOUT_MS)
-    return wav
+    }, this.config.idleTimeoutMs)
   }
 
   async #ensure() {
@@ -285,6 +304,13 @@ export function apply(ctx, rawConfig) {
   void ensureModel().catch((error) => { ctx.logger.warn('read-aloud: model preparation failed', error) })
 
   const synthesizer = new Synthesizer(ctx, config, paths)
+  // Load the voice now: a reply that arrives with the model already in memory
+  // starts speaking at once instead of leaving the user unsure whether it will.
+  if (config.preload) {
+    void ensureModel()
+      .then(() => synthesizer.warm())
+      .catch((error) => { ctx.logger.warn('read-aloud: preload failed', error) })
+  }
   ctx.effect(() => async () => { await synthesizer.dispose() }, 'read-aloud: synthesis worker')
   let tail = Promise.resolve()
   const serialized = (task) => {

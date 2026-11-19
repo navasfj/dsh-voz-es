@@ -30,6 +30,7 @@ This repository fixes all three with two plugins that install into DSH and run o
 | Plugin | What it does |
 |---|---|
 | **`dsh-whisper-voice`** | Adds a microphone that dictates with **Whisper** (ONNX, sherpa-onnx) in Spanish. The transcript is inserted at the cursor without clearing what you already wrote. |
+| **`dsh-dictado-vivo`** | Dictates **while you speak**: a Spanish streaming model (Kroko) writes in the composer and the text stays editable, so you review it before sending. Adds a sound-test page to the sidebar. |
 | **`dsh-read-aloud`** | Reads replies with **Piper** (local neural voice). Button next to the microphone: green = reading, red slashed = muted. Muting **pauses** for real; resuming continues where it stopped; after 5 s it discards. |
 
 **Details that matter**
@@ -65,6 +66,7 @@ Pinned to a commit (the one you want to publish):
 ```
 git+https://github.com/Navasfj/dsh-voz-es.git#<commit>&path:/packages/dsh-read-aloud
 git+https://github.com/Navasfj/dsh-voz-es.git#<commit>&path:/packages/dsh-whisper-voice
+git+https://github.com/Navasfj/dsh-voz-es.git#<commit>&path:/packages/dsh-dictado-vivo
 ```
 
 Order for dictation: **Voice input** first, then `dsh-whisper-voice`.

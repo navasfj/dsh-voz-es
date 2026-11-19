@@ -11,6 +11,7 @@
  * alive until the Host terminates it.
  */
 import { createServer } from 'node:http'
+import { readFileSync } from 'node:fs'
 import { timingSafeEqual } from 'node:crypto'
 import { createRequire } from 'node:module'
 import { join } from 'node:path'
@@ -142,9 +143,9 @@ function trimSilence(samples) {
  * @returns the transcript with the loop removed.
  */
 function collapseRepeats(text) {
-  const parts = text.match(/[^.!?…]+[.!?…]*/g)
+  const parts = text.match(/[^.!?â€¦]+[.!?â€¦]*/g)
   if (parts === null || parts.length < 2) return text
-  const normalize = (value) => value.trim().toLowerCase().replace(/\s+/g, ' ').replace(/[.!?…]+$/, '')
+  const normalize = (value) => value.trim().toLowerCase().replace(/\s+/g, ' ').replace(/[.!?â€¦]+$/, '')
   const kept = []
   let removed = 0
   for (const part of parts) {
@@ -167,6 +168,21 @@ function collapseRepeats(text) {
 }
 
 /**
+ * Capitalize the first letter of a transcript.
+ *
+ * NeMo transducers start a sentence in lower case when the clip opens with
+ * silence, which reads badly in a message box. Whisper already capitalizes on
+ * its own; only the transducer path needs this.
+ * @param text - raw transcript.
+ * @returns the transcript with its first letter capitalized.
+ */
+function capitalizeSentence(text) {
+  const index = text.search(/\p{L}/u)
+  if (index < 0) return text
+  return text.slice(0, index) + text[index].toLocaleUpperCase('es') + text.slice(index + 1)
+}
+
+/**
  * Start the authenticated loopback listener used by the Host.
  * @param token - private per-process authentication secret.
  * @param config - runtime and model configuration.
@@ -184,6 +200,24 @@ function startServer(token, config, paths) {
    * @returns the loaded recognizer.
    */
   const recognizerFor = (code) => {
+    // NeMo transducers are multilingual and take no language hint, so the
+    // recognizer is built once and reused for every recording.
+    if (config.kind === 'transducer') {
+      if (recognizer === undefined) {
+        recognizer = new sherpa.OfflineRecognizer({
+          featConfig: { sampleRate: 16000, featureDim: 80 },
+          modelConfig: {
+            transducer: { encoder: paths.encoder, decoder: paths.decoder, joiner: paths.joiner },
+            tokens: paths.tokens,
+            modelType: 'nemo_transducer',
+            numThreads: config.threads,
+            provider: 'cpu',
+            debug: 0,
+          },
+        })
+      }
+      return recognizer
+    }
     const requested = code === 'auto' ? '' : code
     if (recognizer !== undefined && language === requested) return recognizer
     recognizer = new sherpa.OfflineRecognizer({
@@ -210,10 +244,15 @@ function startServer(token, config, paths) {
     const wave = decodeWave(audio, config.maxAudioBytes)
     const engine = recognizerFor(code)
     const stream = engine.createStream()
-    stream.acceptWaveform({ sampleRate: 16000, samples: trimSilence(wave.samples) })
+    // Whisper needs the near-silence trimmed: it conditions on the clip and a
+    // quiet head or tail is what triggers its repetition loop. A transducer
+    // decodes the waveform as it is, and trimming it cut the last word of a
+    // dictation and dragged the first one, so it is left alone.
+    const samples = config.kind === 'transducer' ? wave.samples : trimSilence(wave.samples)
+    stream.acceptWaveform({ sampleRate: 16000, samples })
     engine.decode(stream)
     const text = collapseRepeats(engine.getResult(stream).text.trim())
-    return { text, audioSeconds: wave.audioSeconds, inferenceSeconds: (performance.now() - started) / 1000 }
+    return { text: config.kind === 'transducer' ? capitalizeSentence(text) : text, audioSeconds: wave.audioSeconds, inferenceSeconds: (performance.now() - started) / 1000 }
   }
   const server = createServer((request, response) => {
     const reply = (status, value) => {
@@ -260,7 +299,11 @@ function startServer(token, config, paths) {
 }
 
 async function main() {
-  const raw = JSON.parse(process.argv[2])
+  // The Host passes the configuration inline; a path is accepted so a shell
+  // without safe argument quoting can run the same process for diagnostics.
+  const argument = process.argv[2]
+  if (typeof argument !== 'string' || argument === '') throw new Error('Missing worker configuration')
+  const raw = argument.startsWith('{') ? JSON.parse(argument) : JSON.parse(readFileSync(argument, 'utf8'))
   const token = process.env.DSH_WHISPER_TOKEN
   if (typeof token !== 'string' || !/^[a-f0-9]{64}$/.test(token)) throw new Error('DSH_WHISPER_TOKEN is missing or invalid')
   delete process.env.DSH_WHISPER_TOKEN

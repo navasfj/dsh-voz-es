@@ -127,16 +127,19 @@ function normalizeConfig(ctx, raw) {
  */
 function resolveModel(config) {
   const model = LOCK.models[config.model]
+  const kind = model.kind ?? 'whisper'
   const root = config.modelDirectory ?? join(config.dataRoot, 'models', `whisper-${config.model}`)
+  const roles = kind === 'transducer' ? ['encoder', 'decoder', 'joiner', 'tokens'] : ['encoder', 'decoder', 'tokens']
+  const paths = { kind }
+  for (const role of roles) paths[role] = join(root, model[role].name)
   return {
     model,
+    kind,
     root,
-    assets: [model.encoder, model.decoder, model.tokens],
+    assets: roles.map((role) => model[role]),
     managed: config.modelDirectory === undefined,
     paths: {
-      encoder: join(root, model.encoder.name),
-      decoder: join(root, model.decoder.name),
-      tokens: join(root, model.tokens.name),
+      ...paths,
       worker: fileURLToPath(new URL(import.meta.url.endsWith('.ts') ? './worker.ts' : './worker.js', import.meta.url)),
     },
   }
@@ -174,7 +177,9 @@ async function inspectModel(config, signal) {
   const { assets, managed, paths } = resolveModel(config)
   signal.throwIfAborted()
   try {
-    await Promise.all([paths.encoder, paths.decoder, paths.tokens].map((path) => access(path)))
+    await Promise.all(Object.entries(paths)
+      .filter(([role]) => role !== 'worker' && role !== 'kind')
+      .map(([, path]) => access(path)))
   } catch (error) {
     if (error.code !== 'ENOENT') throw error
     return undefined
@@ -543,8 +548,8 @@ class WhisperModel {
     const token = randomBytes(32).toString('hex')
     const handle = this.ctx.subprocess.spawn({
       argv: [process.execPath, runtime.worker, JSON.stringify({
-        config: { language: this.config.language, threads: this.config.threads, maxAudioBytes: this.config.maxAudioBytes },
-        paths: { encoder: runtime.encoder, decoder: runtime.decoder, tokens: runtime.tokens },
+        config: { kind: runtime.kind ?? 'whisper', language: this.config.language, threads: this.config.threads, maxAudioBytes: this.config.maxAudioBytes },
+        paths: { encoder: runtime.encoder, decoder: runtime.decoder, joiner: runtime.joiner ?? '', tokens: runtime.tokens },
       })],
       cwd: this.config.dataRoot,
       graceMs: this.config.graceMs,
@@ -633,7 +638,7 @@ export function apply(ctx, rawConfig) {
     const unregister = ctx.speechToText.register({
       info: {
         id: config.providerId,
-        name: `Whisper ${config.model} (INT8)`,
+        name: LOCK.models[config.model]?.label ?? `Whisper ${config.model} (INT8)`,
         location: 'host-local',
         languages: LANGUAGES,
         setupEstimate: {

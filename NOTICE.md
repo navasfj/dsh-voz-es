@@ -22,3 +22,12 @@ runtime que descarga en tiempo de ejecución pertenecen a sus autores:
 ## DeepSeek Harness
 
 - [deepseek-ai/deepseek-harness](https://github.com/deepseek-ai/deepseek-harness), licencia MIT. Los plugins usan sus APIs de extensión (`speechToText`, slots, `uiConversation`, rutas web autenticadas).
+
+## Parakeet TDT 0.6B v3
+
+- Modelo original: [nvidia/parakeet-tdt-0.6b-v3](https://huggingface.co/nvidia/parakeet-tdt-0.6b-v3), licencia **CC-BY-4.0**.
+- Conversión ONNX: `sherpa-onnx` (k2-fsa). No se redistribuye: el plugin lo descarga, lo verifica por SHA-256 y lo guarda en la caché local.
+
+## Kroko español
+
+- Modelos Kroko de Banafo, licencia **CC-BY-SA-4.0**; conversión ONNX de [csukuangfj/sherpa-onnx-streaming-zipformer-es-kroko-2025-08-06](https://huggingface.co/csukuangfj/sherpa-onnx-streaming-zipformer-es-kroko-2025-08-06). Se descarga, no se redistribuye.

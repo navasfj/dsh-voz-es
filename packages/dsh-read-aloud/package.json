@@ -1,6 +1,6 @@
 {
   "name": "@navasfj/dsh-read-aloud",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "private": true,
   "description": "Read assistant replies aloud with a local Piper voice, with a mute/active toggle in the composer",
   "type": "module",

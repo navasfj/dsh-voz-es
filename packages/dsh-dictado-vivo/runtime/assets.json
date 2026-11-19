@@ -1,0 +1,33 @@
+{
+  "repository": "csukuangfj/sherpa-onnx-streaming-zipformer-es-kroko-2025-08-06",
+  "license": "CC-BY-SA-4.0 (modelos Kroko de Banafo, convertidos a ONNX por el proyecto sherpa-onnx)",
+  "models": {
+    "kroko-es": {
+      "revision": "20cf7a4921613397841d31168796cade5b866585",
+      "encoder": {
+        "name": "encoder.onnx",
+        "url": "https://huggingface.co/csukuangfj/sherpa-onnx-streaming-zipformer-es-kroko-2025-08-06/resolve/20cf7a4921613397841d31168796cade5b866585/encoder.onnx",
+        "bytes": 154878102,
+        "sha256": "2d9f5ef87d1a5257f8a6687e21501c56f3aa2fcbfcfab9364dcc4ce4e06ae81b"
+      },
+      "decoder": {
+        "name": "decoder.onnx",
+        "url": "https://huggingface.co/csukuangfj/sherpa-onnx-streaming-zipformer-es-kroko-2025-08-06/resolve/20cf7a4921613397841d31168796cade5b866585/decoder.onnx",
+        "bytes": 617488,
+        "sha256": "d4ce176b94b25f7acc88717bc3f704fcf5d6e131aaac2e0cabab3885541181ee"
+      },
+      "joiner": {
+        "name": "joiner.onnx",
+        "url": "https://huggingface.co/csukuangfj/sherpa-onnx-streaming-zipformer-es-kroko-2025-08-06/resolve/20cf7a4921613397841d31168796cade5b866585/joiner.onnx",
+        "bytes": 336817,
+        "sha256": "dae35df88d676e320fcdb99217328e66dcf722bf11b0f2459e14ddb5b982ded5"
+      },
+      "tokens": {
+        "name": "tokens.txt",
+        "url": "https://huggingface.co/csukuangfj/sherpa-onnx-streaming-zipformer-es-kroko-2025-08-06/resolve/20cf7a4921613397841d31168796cade5b866585/tokens.txt",
+        "bytes": 6385,
+        "sha256": "1be5e0a58e05d06d327df4c6b7b5e4f8aba01da6981eb016fcaceafc6a56680f"
+      }
+    }
+  }
+}

@@ -19,15 +19,17 @@
   name: "@deepseek-ai/dsh-experimental-speech-to-text-sensevoice"
   disabled: true
 
-# El reconocedor Whisper local. Resuelve su caché de modelos en tiempo de
-# ejecución (<DSH_HOME>/speech-to-text/whisper), así que el patch no depende de
-# expresiones `!!js` del Loader. `small` da bastante más precisión en español
-# que `base` a cambio de ~375 MB y algo más de CPU; con `base` basta para
-# dictado muy claro.
+# El reconocedor local. `parakeet-v3` es un transductor NeMo de NVIDIA (25
+# idiomas europeos, español incluido): en las pruebas escribe mejor que Whisper
+# `small` y tarda la cuarta parte, así que es el que hace el pase final del
+# dictado. Los Whisper siguen disponibles cambiando `model` (`small`, `base`,
+# `tiny`). `idleTimeoutMs` mantiene el motor caliente media hora: si se apaga,
+# la siguiente grabación paga varios segundos de carga.
 - insert:
     - id: speech-to-text-whisper
       name: "@navasfj/dsh-whisper-voice"
       config:
-        model: small
+        model: parakeet-v3
         language: es
         threads: 4
+        idleTimeoutMs: 1800000

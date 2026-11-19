@@ -30,6 +30,9 @@ window.__ModuleLoader__.load({
     // One synthesis request carries several sentences; the Host pays a model
     // inference per request, so very small chunks would add needless latency.
     const MAX_CHUNK = 800
+    // First fragment of a reply: short enough that the voice starts almost at
+    // once, long enough to sound like a sentence.
+    const FIRST_CHUNK = 180
     // A mute longer than this forgets the paused reply: pressing the button
     // again starts cleanly instead of resuming an old narration.
     const MUTE_DISCARD_MS = 5000
@@ -69,20 +72,23 @@ window.__ModuleLoader__.load({
       const chunks = []
       let current = ''
       for (const sentence of text.split(/(?<=[.!?…;:])\s+/)) {
-        if (sentence.length > MAX_CHUNK) {
+        // The first fragment is kept short: one sentence is enough to start
+        // speaking while the rest is still being synthesized.
+        const limit = chunks.length === 0 ? FIRST_CHUNK : MAX_CHUNK
+        if (sentence.length > limit) {
           if (current !== '') { chunks.push(current); current = '' }
           let rest = sentence
-          while (rest.length > MAX_CHUNK) {
-            let cut = rest.lastIndexOf(', ', MAX_CHUNK)
-            if (cut < 200) cut = rest.lastIndexOf(' ', MAX_CHUNK)
-            if (cut < 200) cut = MAX_CHUNK
+          while (rest.length > limit) {
+            let cut = rest.lastIndexOf(', ', limit)
+            if (cut < Math.min(200, limit / 2)) cut = rest.lastIndexOf(' ', limit)
+            if (cut < Math.min(200, limit / 2)) cut = limit
             chunks.push(rest.slice(0, cut + 1).trim())
             rest = rest.slice(cut + 1).trim()
           }
           current = rest
           continue
         }
-        if (current !== '' && current.length + sentence.length + 1 > MAX_CHUNK) {
+        if (current !== '' && current.length + sentence.length + 1 > limit) {
           chunks.push(current)
           current = ''
         }
@@ -273,6 +279,25 @@ window.__ModuleLoader__.load({
     /** User messages already seen, so a re-bind does not stop the narration. */
     const seenUsers = new Set()
 
+    /** Characters of a still-streaming reply already queued, per Chat node. */
+    const partialSpoken = new Map()
+
+    /**
+     * End of the last complete sentence in a partially streamed reply.
+     *
+     * Requires a letter before the punctuation so a list number ("1. ") is not
+     * mistaken for a sentence end, and ignores ellipsis inside a word.
+     * @param text - text streamed so far.
+     * @returns character offset just past the last sentence, or 0.
+     */
+    function completePrefix(text) {
+      let end = 0
+      for (const match of text.matchAll(/[\p{L}][.!?…][)"'»\]]*(?=\s|$)/gu)) {
+        end = match.index + match[0].length
+      }
+      return end
+    }
+
     /**
      * Follow one Session's Chat snapshot and read replies as they settle.
      *
@@ -311,20 +336,41 @@ window.__ModuleLoader__.load({
             }
             continue
           }
-          // The Chat renderer kind of one Assistant step is `assistant-step`;
-          // only its settled state carries the final, user-visible blocks.
+          // The Chat renderer kind of one Assistant step is `assistant-step`. A
+          // settled node carries the final blocks; a running one publishes the
+          // text it has streamed so far, which is what lets the reading start
+          // before the reply is finished.
           if (node.kind !== 'assistant-step' || !node.data) continue
           const data = node.data
-          if (data.status !== 'settled') continue
           const key = `${sessionId}#${node.key}`
-          if (delivered.has(key)) continue
-          delivered.add(key)
-          if (!isEnabled()) continue
-          // Nodes that existed before this watcher bound are history; a reply
-          // already streaming when the toggle turned on keeps a later time.
-          if (typeof data.time === 'number' && data.time < boundAt - 5000) continue
+          const settled = data.status === 'settled'
+          if (settled && delivered.has(key)) continue
+          // Nodes that existed before this watcher bound are history, and a
+          // reply that settles while the toggle is off stays silent.
+          if (typeof data.time === 'number' && data.time < boundAt - 5000) {
+            if (settled) delivered.add(key)
+            continue
+          }
+          if (!isEnabled()) {
+            if (settled) delivered.add(key)
+            continue
+          }
           const text = (data.blocks ?? []).filter((block) => block.kind === 'text').map((block) => block.text).join('\n')
-          enqueue(text)
+          if (settled) {
+            delivered.add(key)
+            const spoken = partialSpoken.get(key) ?? 0
+            partialSpoken.delete(key)
+            if (text.length > spoken) enqueue(text.slice(spoken))
+            continue
+          }
+          // Still arriving: read only complete sentences, so nothing that may
+          // change is voiced and no half phrase is spoken.
+          const boundary = completePrefix(text)
+          const spoken = partialSpoken.get(key) ?? 0
+          if (boundary > spoken) {
+            partialSpoken.set(key, boundary)
+            enqueue(text.slice(spoken, boundary))
+          }
         }
       }
 

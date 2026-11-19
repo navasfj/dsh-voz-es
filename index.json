@@ -14,12 +14,12 @@
       },
       "versions": [
         {
-          "version": "1.0.0",
-          "publishTimestamp": 1794601759,
+          "version": "1.1.0",
+          "publishTimestamp": 1795116092,
           "source": {
             "type": "git",
             "url": "https://github.com/Navasfj/dsh-voz-es",
-            "commit": "0b387e9f86e51ac25b8ac3f8edc1a79051113f3c",
+            "commit": "0fbea3a5a66d57fb3538ab3040ac4e6fdd119a05",
             "path": "packages/dsh-whisper-voice"
           },
           "engines": {
@@ -39,12 +39,12 @@
       },
       "versions": [
         {
-          "version": "1.0.0",
-          "publishTimestamp": 1794601759,
+          "version": "1.1.0",
+          "publishTimestamp": 1795116092,
           "source": {
             "type": "git",
             "url": "https://github.com/Navasfj/dsh-voz-es",
-            "commit": "0b387e9f86e51ac25b8ac3f8edc1a79051113f3c",
+            "commit": "0fbea3a5a66d57fb3538ab3040ac4e6fdd119a05",
             "path": "packages/dsh-read-aloud"
           },
           "engines": {

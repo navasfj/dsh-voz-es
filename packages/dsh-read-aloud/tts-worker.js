@@ -12,6 +12,7 @@ import { createServer } from 'node:http'
 import { timingSafeEqual } from 'node:crypto'
 import { createRequire } from 'node:module'
 import { join } from 'node:path'
+import { pathToFileURL } from 'node:url'
 
 const MAX_BODY_BYTES = 16 * 1024
 
@@ -62,6 +63,59 @@ function encodeWav(samples, sampleRate) {
     buffer.writeInt16LE(value, 44 + index * 2)
   }
   return buffer
+}
+
+/**
+ * Bring a synthesized clip up to a usable listening level.
+ *
+ * Piper renders around -8.5 dBFS peak, so the browser plays the narration
+ * noticeably quieter than anything else. Peak normalization to -1 dBFS fixes it
+ * without a limiter or a compressor: the waveform keeps its shape, only the
+ * gain changes. Chunks are normalized individually, which also evens out the
+ * differences between them.
+ *
+ * @param samples - normalized float samples from the model.
+ * @param targetPeak - peak to aim for, as a fraction of full scale (0.89 = -1 dBFS).
+ * @param maxGain - never amplify more than this, so a near-silent clip stays silent.
+ * @returns the same samples, or a boosted copy.
+ */
+function normalizeLevel(samples, targetPeak = 0.89, maxGain = 4) {
+  let peak = 0
+  for (const sample of samples) {
+    const magnitude = Math.abs(sample)
+    if (magnitude > peak) peak = magnitude
+  }
+  if (peak <= 0.001) return samples
+  const gain = Math.min(maxGain, targetPeak / peak)
+  if (gain <= 1.02) return samples
+  const boosted = new Float32Array(samples.length)
+  for (let index = 0; index < samples.length; index++) {
+    boosted[index] = Math.max(-1, Math.min(1, samples[index] * gain))
+  }
+  return boosted
+}
+
+/** Lead-in before every clip, so the device wakes up before the first syllable. */
+const LEAD_IN_SECONDS = 0.15
+
+/**
+ * Prepend a short digital silence.
+ *
+ * Playback starts as soon as the element has the file, and the output device
+ * takes a moment to wake: without the gap the first phoneme is clipped and the
+ * first word arrives half eaten. 150 ms is below perception and long enough
+ * for the device.
+ *
+ * @param samples - synthesized samples.
+ * @param sampleRate - rate of the clip.
+ * @returns a new array with the silence in front.
+ */
+function withLeadIn(samples, sampleRate) {
+  const lead = Math.round(sampleRate * LEAD_IN_SECONDS)
+  if (lead <= 0) return samples
+  const padded = new Float32Array(lead + samples.length)
+  padded.set(samples, lead)
+  return padded
 }
 
 /**
@@ -133,7 +187,8 @@ async function main() {
       try {
         // Electron's V8 memory cage rejects native external buffers.
         const audio = tts.generate({ text, sid: 0, speed: config.speed, enableExternalBuffer: false })
-        reply(200, encodeWav(audio.samples, audio.sampleRate), 'audio/wav')
+        const samples = withLeadIn(normalizeLevel(audio.samples), audio.sampleRate)
+        reply(200, encodeWav(samples, audio.sampleRate), 'audio/wav')
       } catch (error) {
         reply(500, JSON.stringify({ error: error instanceof Error ? error.message : String(error) }), 'application/json')
       }
@@ -150,6 +205,11 @@ async function main() {
   process.stdout.write(`${JSON.stringify({ port: address.port })}\n`)
 }
 
-main().catch((error) => {
-  process.stderr.write(`${error instanceof Error ? error.message : String(error)}\n`, () => { process.exit(1) })
-})
+const isMain = process.argv[1] !== undefined && import.meta.url === pathToFileURL(process.argv[1]).href
+if (isMain) {
+  main().catch((error) => {
+    process.stderr.write(`${error instanceof Error ? error.message : String(error)}\n`, () => { process.exit(1) })
+  })
+}
+
+export { normalizeLevel, withLeadIn }

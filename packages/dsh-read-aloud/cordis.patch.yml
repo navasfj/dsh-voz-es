@@ -5,10 +5,10 @@
 # El navegador reproduce el WAV con un elemento de audio, así que el mute pausa
 # y reanuda de verdad.
 #
-# `speed` < 1 habla más despacio; 0.9 es el valor por defecto.
+# `speed` < 1 habla más despacio; 1.0 es el ritmo natural de Piper.
 - insert:
     - id: ui-read-aloud
       name: "@navasfj/dsh-read-aloud"
       config:
-        speed: 0.9
+        speed: 1.15
         threads: 4

@@ -1,0 +1,7 @@
+{
+  "meta": {
+    "title": "Live dictation",
+    "description": "Writes while you speak: text appears in the composer, and Whisper rewrites it when you stop.",
+    "detail": "docs/DETAIL.en.md"
+  }
+}

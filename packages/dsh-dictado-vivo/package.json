@@ -1,0 +1,38 @@
+{
+  "name": "@navasfj/dsh-dictado-vivo",
+  "version": "1.1.0",
+  "private": true,
+  "description": "Live dictation for the DSH composer: the words appear while you speak, and Whisper writes the final text",
+  "type": "module",
+  "main": "index.js",
+  "exports": {
+    ".": "./index.js",
+    "./client": "./client.js",
+    "./locale/*.json": "./locale/*.json",
+    "./icon": "./icon.svg"
+  },
+  "files": [
+    "index.js",
+    "client.js",
+    "worker.js",
+    "runtime",
+    "cordis.patch.yml",
+    "locale",
+    "docs",
+    "icon.svg",
+    "README.md"
+  ],
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web",
+      "immediately": true,
+      "inject": [
+        "@deepseek-ai/dsh-client-ui-conversation"
+      ]
+    }
+  },
+  "license": "MIT"
+}
