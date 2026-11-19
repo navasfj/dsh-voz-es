@@ -107,7 +107,7 @@ Full guide with dictation, what is read and what is not, limits and FAQ: **[docs
 ## Screenshots
 
 <p align="center">
-  <img src="assets/screenshot-composer.png" alt="The real composer: read-aloud speaker, dictation microphone and send button" width="727">
+  <img src="assets/screenshot-composer.png" alt="The real composer: read-aloud speaker, dictation microphone and send button" width="964">
 </p>
 
 The real composer: the read-aloud speaker sits left of the dictation microphone, and the blue circle sends. The banner above is a stylised version of this row.

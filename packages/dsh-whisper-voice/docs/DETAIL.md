@@ -1,7 +1,8 @@
 # Dictado local: Parakeet y Whisper
 
-Añade un reconocedor **Whisper local** a la entrada de voz de DeepSeek Harness y
-lo deja seleccionado por defecto en español. La interfaz no se duplica: el botón
+Añade el reconocedor **local** de la entrada de voz de DeepSeek Harness: **Parakeet v3**
+por defecto (25 idiomas europeos, español incluido) y **Whisper** (`small`, `base`, `tiny`)
+como opción. La interfaz no se duplica: el botón
 de micrófono junto a **Enviar**, la animación de onda en tiempo real y la
 inserción del texto en el borrador siguen siendo los del bundle de voz de DSH.
 
@@ -13,8 +14,8 @@ inserción del texto en el borrador siguen siendo los del bundle de voz de DSH.
   transcriba español sin tener que configurar nada.
 - Desactiva SenseVoice, que no reconoce español, para que no aparezca como
   opción en el selector.
-- Descarga una sola vez pesos ONNX de Whisper fijados por revisión, tamaño y
-  SHA-256, y los reutiliza en los siguientes arranques.
+- Descarga una sola vez los pesos ONNX (Parakeet ~670 MB, Whisper `small` ~375 MB)
+  fijados por revisión, tamaño y SHA-256.
 - Mantiene una cola acotada y un proceso de reconocimiento propio: la inferencia
   no bloquea el proceso del Host y se detiene tras un periodo de inactividad.
 
@@ -23,8 +24,8 @@ inserción del texto en el borrador siguen siendo los del bundle de voz de DSH.
 1. Instala este bundle y el bundle **Voice input** de DSH. Este plugin necesita
    que el bundle de voz esté seleccionado *antes* que él para poder ajustar su
    configuración.
-2. Abre **Ajustes de plugins → Voz con Whisper** para ver el estado de los
-   modelos. En el primer arranque se descargan los pesos (unos 160 MB con
+2. Abre **Ajustes de plugins → Dictado local** para ver el estado de los
+   modelos. En el primer arranque se descargan los pesos (unos 670 MB con Parakeet v3;
    `base`); el progreso aparece en la ficha del bundle.
 3. Cuando la ficha indique que el reconocedor está listo, pulsa el micrófono
    entre el selector de modelo y **Enviar**.
@@ -34,7 +35,7 @@ inserción del texto en el borrador siguen siendo los del bundle de voz de DSH.
    ofrece **Insertar** o descartarlo, para no pisar lo que hayas escrito.
 
 La selección de idioma y de tamaño de modelo se guarda en la configuración del
-plugin (**Ajustes de plugins → Voz con Whisper**). Los idiomas disponibles salen
+plugin (**Ajustes de plugins → Dictado local**). Los idiomas disponibles salen
 del proveedor; `auto` deja que Whisper detecte el idioma.
 
 ## Modelos

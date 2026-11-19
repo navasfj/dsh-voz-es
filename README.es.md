@@ -107,7 +107,7 @@ Guía completa, con el dictado paso a paso, qué lee y qué no, límites y pregu
 ## Capturas
 
 <p align="center">
-  <img src="assets/screenshot-composer.png" alt="El compositor real: altavoz de lectura, micrófono de dictado y botón de enviar" width="727">
+  <img src="assets/screenshot-composer.png" alt="El compositor real: altavoz de lectura, micrófono de dictado y botón de enviar" width="964">
 </p>
 
 El compositor real: el altavoz de lectura queda a la izquierda del micrófono de dictado, y el círculo azul envía. El banner de arriba es una versión estilizada de esa fila.
