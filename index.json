@@ -15,11 +15,11 @@
       "versions": [
         {
           "version": "1.1.0",
-          "publishTimestamp": 1795116093,
+          "publishTimestamp": 1795116798,
           "source": {
             "type": "git",
             "url": "https://github.com/Navasfj/dsh-voz-es",
-            "commit": "6002d6c9acf5112e2b54fbacba0a2a3418254c7d",
+            "commit": "c8eaa90e3dbfb02d172380d65bc20d9fd3929fa1",
             "path": "packages/dsh-whisper-voice"
           },
           "engines": {
@@ -40,12 +40,37 @@
       "versions": [
         {
           "version": "1.1.0",
-          "publishTimestamp": 1795116093,
+          "publishTimestamp": 1795116798,
           "source": {
             "type": "git",
             "url": "https://github.com/Navasfj/dsh-voz-es",
-            "commit": "6002d6c9acf5112e2b54fbacba0a2a3418254c7d",
+            "commit": "c8eaa90e3dbfb02d172380d65bc20d9fd3929fa1",
             "path": "packages/dsh-read-aloud"
+          },
+          "engines": {
+            "dsh": ">=0.2.2-rc.2 <0.3.0"
+          }
+        }
+      ]
+    },
+    {
+      "name": "@navasfj/dsh-dictado-vivo",
+      "title": "Dictado en vivo en el compositor",
+      "description": "Escribe mientras hablas con un modelo español en streaming y deja el texto editable antes de enviar.",
+      "author": "Navasfj",
+      "repository": {
+        "url": "https://github.com/Navasfj/dsh-voz-es",
+        "directory": "packages/dsh-dictado-vivo"
+      },
+      "versions": [
+        {
+          "version": "1.1.0",
+          "publishTimestamp": 1795116798,
+          "source": {
+            "type": "git",
+            "url": "https://github.com/Navasfj/dsh-voz-es",
+            "commit": "c8eaa90e3dbfb02d172380d65bc20d9fd3929fa1",
+            "path": "packages/dsh-dictado-vivo"
           },
           "engines": {
             "dsh": ">=0.2.2-rc.2 <0.3.0"
