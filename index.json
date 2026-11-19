@@ -1,12 +1,12 @@
 {
   "format": 1,
   "title": "Voz en español para DSH",
-  "description": "Dictado con Whisper y lectura en voz alta con Piper, todo local.",
+  "description": "Dictado en vivo y lectura en voz alta, todo local: Parakeet, Kroko y Piper.",
   "plugins": [
     {
       "name": "@navasfj/dsh-whisper-voice",
-      "title": "Dictado con Whisper en español",
-      "description": "Reconocimiento local con Whisper para el micrófono de DSH, con español y modelos verificados.",
+      "title": "Dictado local con Parakeet",
+      "description": "Parakeet v3 por defecto y Whisper como opción: reconocimiento local para el micrófono, en español y con modelos verificados.",
       "author": "Navasfj",
       "repository": {
         "url": "https://github.com/Navasfj/dsh-voz-es",
@@ -15,11 +15,11 @@
       "versions": [
         {
           "version": "1.1.0",
-          "publishTimestamp": 1795116798,
+          "publishTimestamp": 1795117361,
           "source": {
             "type": "git",
             "url": "https://github.com/Navasfj/dsh-voz-es",
-            "commit": "c8eaa90e3dbfb02d172380d65bc20d9fd3929fa1",
+            "commit": "8520e695615f9344bc818b4a6a4e2991002756e8",
             "path": "packages/dsh-whisper-voice"
           },
           "engines": {
@@ -40,11 +40,11 @@
       "versions": [
         {
           "version": "1.1.0",
-          "publishTimestamp": 1795116798,
+          "publishTimestamp": 1795117361,
           "source": {
             "type": "git",
             "url": "https://github.com/Navasfj/dsh-voz-es",
-            "commit": "c8eaa90e3dbfb02d172380d65bc20d9fd3929fa1",
+            "commit": "8520e695615f9344bc818b4a6a4e2991002756e8",
             "path": "packages/dsh-read-aloud"
           },
           "engines": {
@@ -65,11 +65,11 @@
       "versions": [
         {
           "version": "1.1.0",
-          "publishTimestamp": 1795116798,
+          "publishTimestamp": 1795117361,
           "source": {
             "type": "git",
             "url": "https://github.com/Navasfj/dsh-voz-es",
-            "commit": "c8eaa90e3dbfb02d172380d65bc20d9fd3929fa1",
+            "commit": "8520e695615f9344bc818b4a6a4e2991002756e8",
             "path": "packages/dsh-dictado-vivo"
           },
           "engines": {
